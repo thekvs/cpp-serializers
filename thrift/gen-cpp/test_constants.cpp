@@ -6,7 +6,7 @@
  */
 #include "test_constants.h"
 
-namespace test {
+namespace thrift_test {
 
 const testConstants g_test_constants;
 

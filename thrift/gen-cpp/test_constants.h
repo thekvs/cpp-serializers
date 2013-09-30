@@ -9,7 +9,7 @@
 
 #include "test_types.h"
 
-namespace test {
+namespace thrift_test {
 
 class testConstants {
  public:

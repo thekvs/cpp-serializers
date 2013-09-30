@@ -23,11 +23,13 @@ thrift_serialization_test(size_t iterations)
 {
     using apache::thrift::transport::TMemoryBuffer;
     using apache::thrift::protocol::TBinaryProtocol;
+    
+    using namespace thrift_test;
 
     boost::shared_ptr<TMemoryBuffer>   buffer(new TMemoryBuffer());
     boost::shared_ptr<TBinaryProtocol> protocol(new TBinaryProtocol(buffer));
 
-    test::Record a;
+    Record a;
 
     for (size_t i = 0; i < kItegersCount; i++) {
         a.ids.push_back(kIntegerValue);
@@ -47,7 +49,7 @@ thrift_serialization_test(size_t iterations)
     boost::shared_ptr<TBinaryProtocol> protocol2(new TBinaryProtocol(buffer2));
 
     buffer2->resetBuffer((uint8_t*)serialized.data(), serialized.length());
-    test::Record a2;
+    Record a2;
     a2.read(protocol2.get());
 
     if (a != a2) {

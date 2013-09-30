@@ -15,7 +15,7 @@
 #include <thrift/cxxfunctional.h>
 
 
-namespace test {
+namespace thrift_test {
 
 
 class Record {
