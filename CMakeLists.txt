@@ -107,6 +107,26 @@ set(LINKLIBS    ${THRIFT_LIBRARIES}
                 ${CMAKE_THREAD_LIBS_INIT}
 )
 
-add_executable(test ${test_SOURCE_DIR}/test.cpp)
+add_custom_command(
+    DEPENDS ${test_SOURCE_DIR}/test.thrift
+    COMMAND ${THRIFT_GENERATOR}
+    ARGS -r -gen cpp -o ${test_SOURCE_DIR}/thrift/ ${test_SOURCE_DIR}/test.thrift
+    OUTPUT  "${test_SOURCE_DIR}/thrift/gen-cpp/test_constants.cpp"
+            "${test_SOURCE_DIR}/thrift/gen-cpp/test_types.cpp"
+    COMMENT "Executing Thrift compiler"
+)
+set_source_files_properties(${test_SOURCE_DIR}/thrift/gen-cpp/test_constants.cpp
+                            ${test_SOURCE_DIR}/thrift/gen-cpp/test_types.cpp
+                            ${test_SOURCE_DIR}/thrift/gen-cpp/test_constants.h
+                            ${test_SOURCE_DIR}/thrift/gen-cpp/test_types.h
+                            PROPERTIES GENERATED TRUE
+)
+
+set(THRIFT_SERIALIZATION_SOURCES    ${test_SOURCE_DIR}/thrift/gen-cpp/test_constants.cpp
+                                    ${test_SOURCE_DIR}/thrift/gen-cpp/test_types.cpp
+)
+
+add_executable(test ${test_SOURCE_DIR}/test.cpp ${THRIFT_SERIALIZATION_SOURCES})
 add_dependencies(test thrift msgpack protobuf)
 target_link_libraries(test ${LINKLIBS})
+set_target_properties(test PROPERTIES COMPILE_FLAGS "-std=c++11")
