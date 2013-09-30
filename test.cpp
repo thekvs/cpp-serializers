@@ -56,6 +56,8 @@ thrift_serialization_test(size_t iterations)
         throw std::logic_error("invariant failed");
     }
 
+    std::cout << "thrift: " << serialized.size() << " bytes" << std::endl;
+
     auto start = std::chrono::high_resolution_clock::now();
     for (size_t i = 0; i < iterations; i++) {
         buffer->resetBuffer();
@@ -65,7 +67,7 @@ thrift_serialization_test(size_t iterations)
     auto finish = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
 
-    std::cout << "thrift: " << duration << " milliseconds" << std::endl;
+    std::cout << "thrift: " << duration << " milliseconds" << std::endl << std::endl;
 }
 
 int
