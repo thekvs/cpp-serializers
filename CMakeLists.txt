@@ -140,7 +140,10 @@ set_source_files_properties(
 )
 set(PROTOBUF_SERIALIZATION_SOURCES  ${test_SOURCE_DIR}/protobuf/test.pb.cc)
 
-add_executable(test ${test_SOURCE_DIR}/test.cpp ${THRIFT_SERIALIZATION_SOURCES} ${PROTOBUF_SERIALIZATION_SOURCES})
+add_executable(test ${test_SOURCE_DIR}/test.cpp
+                    ${THRIFT_SERIALIZATION_SOURCES}
+                    ${PROTOBUF_SERIALIZATION_SOURCES}
+)
 add_dependencies(test thrift msgpack protobuf)
 target_link_libraries(test ${LINKLIBS})
 set_target_properties(test PROPERTIES COMPILE_FLAGS "-std=c++11")
