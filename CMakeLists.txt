@@ -115,18 +115,32 @@ add_custom_command(
             "${test_SOURCE_DIR}/thrift/gen-cpp/test_types.cpp"
     COMMENT "Executing Thrift compiler"
 )
-set_source_files_properties(${test_SOURCE_DIR}/thrift/gen-cpp/test_constants.cpp
-                            ${test_SOURCE_DIR}/thrift/gen-cpp/test_types.cpp
-                            ${test_SOURCE_DIR}/thrift/gen-cpp/test_constants.h
-                            ${test_SOURCE_DIR}/thrift/gen-cpp/test_types.h
-                            PROPERTIES GENERATED TRUE
+set_source_files_properties(
+    ${test_SOURCE_DIR}/thrift/gen-cpp/test_constants.cpp
+    ${test_SOURCE_DIR}/thrift/gen-cpp/test_types.cpp
+    ${test_SOURCE_DIR}/thrift/gen-cpp/test_constants.h
+    ${test_SOURCE_DIR}/thrift/gen-cpp/test_types.h
+    PROPERTIES GENERATED TRUE
 )
-
 set(THRIFT_SERIALIZATION_SOURCES    ${test_SOURCE_DIR}/thrift/gen-cpp/test_constants.cpp
                                     ${test_SOURCE_DIR}/thrift/gen-cpp/test_types.cpp
 )
 
-add_executable(test ${test_SOURCE_DIR}/test.cpp ${THRIFT_SERIALIZATION_SOURCES})
+add_custom_command(
+    DEPENDS ${test_SOURCE_DIR}/test.proto
+    COMMAND ${PROTOBUF_GENERATOR}
+    ARGS -I${test_SOURCE_DIR} --cpp_out=${test_SOURCE_DIR}/protobuf ${test_SOURCE_DIR}/test.proto
+    OUTPUT  "${test_SOURCE_DIR}/protobuf/test.pb.cc"
+    COMMENT "Executing Protobuf compiler"
+)
+set_source_files_properties(
+    ${test_SOURCE_DIR}/protobuf/test.pb.cc
+    ${test_SOURCE_DIR}/protobuf/test.pb.h
+    PROPERTIES GENERATED TRUE
+)
+set(PROTOBUF_SERIALIZATION_SOURCES  ${test_SOURCE_DIR}/protobuf/test.pb.cc)
+
+add_executable(test ${test_SOURCE_DIR}/test.cpp ${THRIFT_SERIALIZATION_SOURCES} ${PROTOBUF_SERIALIZATION_SOURCES})
 add_dependencies(test thrift msgpack protobuf)
 target_link_libraries(test ${LINKLIBS})
 set_target_properties(test PROPERTIES COMPILE_FLAGS "-std=c++11")

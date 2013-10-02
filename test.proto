@@ -1,0 +1,6 @@
+package protobuf_test;
+
+message Record {
+    repeated int64 ids = 1;
+    repeated string strings = 2;
+}

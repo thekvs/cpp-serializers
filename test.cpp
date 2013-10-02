@@ -70,6 +70,11 @@ thrift_serialization_test(size_t iterations)
     std::cout << "thrift: " << duration << " milliseconds" << std::endl << std::endl;
 }
 
+void
+protobuf_serialization_test(size_t iterations)
+{
+}
+
 int
 main(int argc, char **argv)
 {
@@ -81,6 +86,7 @@ main(int argc, char **argv)
     auto iterations = boost::lexical_cast<size_t>(argv[1]);
 
     thrift_serialization_test(iterations);
+    protobuf_serialization_test(iterations);
 
     return 0;
 }
