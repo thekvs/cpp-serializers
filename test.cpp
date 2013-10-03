@@ -171,9 +171,14 @@ main(int argc, char **argv)
 
     /*std::cout << "total size: " << sizeof(kIntegerValue) * kItegersCount + kStringValue.size() * kStringsCount << std::endl;*/
 
-    thrift_serialization_test(iterations);
-    protobuf_serialization_test(iterations);
-    boost_serialization_test(iterations);
+    try {
+        thrift_serialization_test(iterations);
+        protobuf_serialization_test(iterations);
+        boost_serialization_test(iterations);
+    } catch (std::exception &exc) {
+        std::cerr << "Error: " << exc.what() << std::endl;
+        return EXIT_FAILURE;
+    }
 
-    return 0;
+    return EXIT_SUCCESS;
 }
