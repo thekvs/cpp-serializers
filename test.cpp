@@ -15,6 +15,8 @@
 
 #include "protobuf/test.pb.h"
 
+#include "boost/record.hpp"
+
 const size_t      kItegersCount = 1000;
 const size_t      kStringsCount = 100;
 const int64_t     kIntegerValue = 26354;
@@ -56,7 +58,7 @@ thrift_serialization_test(size_t iterations)
     r2.read(protocol2.get());
 
     if (r1 != r2) {
-        throw std::logic_error("thrift's case: invariant failed");
+        throw std::logic_error("thrift's case: deserialization failed");
     }
 
     std::cout << "thrift: size = " << serialized.size() << " bytes" << std::endl;
@@ -98,7 +100,7 @@ protobuf_serialization_test(size_t iterations)
     Record r2;
     bool ok = r2.ParseFromString(serialized);
     if (!ok /*|| r2 != r1*/) {
-        throw std::logic_error("protobuf's case: invariant failed");
+        throw std::logic_error("protobuf's case: deserialization failed");
     }
 
     std::cout << "protobuf: size = " << serialized.size() << " bytes" << std::endl;
@@ -113,6 +115,44 @@ protobuf_serialization_test(size_t iterations)
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
 
     std::cout << "protobuf: time = " << duration << " milliseconds" << std::endl << std::endl;
+}
+
+void
+boost_serialization_test(size_t iterations)
+{
+    using namespace boost_test;
+
+    Record r1, r2;
+
+    for (size_t i = 0; i < kItegersCount; i++) {
+        r1.ids.push_back(kIntegerValue);
+    }
+
+    for (size_t i = 0; i < kStringsCount; i++) {
+        r1.strings.push_back(kStringValue);
+    }
+
+    std::string serialized;
+
+    to_string(r1, serialized);
+    from_string(r2, serialized);
+
+    if (r1 != r2) {
+        throw std::logic_error("boost's case: deserialization failed");
+    }
+
+    std::cout << "boost: size = " << serialized.size() << " butes" << std::endl;
+
+    auto start = std::chrono::high_resolution_clock::now();
+    for (size_t i = 0; i < iterations; i++) {
+        serialized.clear();
+        to_string(r1, serialized);
+        from_string(r2, serialized);
+    }
+    auto finish = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
+
+    std::cout << "boost: time = " << duration << " milliseconds" << std::endl << std::endl;
 }
 
 int
@@ -133,6 +173,7 @@ main(int argc, char **argv)
 
     thrift_serialization_test(iterations);
     protobuf_serialization_test(iterations);
+    boost_serialization_test(iterations);
 
     return 0;
 }

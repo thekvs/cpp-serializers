@@ -34,25 +34,21 @@ else()
     set(MAKE_PROGRAM "make")
 endif()
 
-find_package(Boost QUIET)
-if (NOT Boost_FOUND)
-    set(boost_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/boost)
-    ExternalProject_Add(
-        boost
-        PREFIX ${boost_PREFIX}
-        URL "http://netcologne.dl.sourceforge.net/project/boost/boost/1.54.0/boost_1_54_0.tar.gz"
-        URL_MD5 "efbfbff5a85a9330951f243d0a46e4b9"
-        CONFIGURE_COMMAND ""
-        BUILD_COMMAND ""
-        INSTALL_COMMAND mkdir -p ${boost_PREFIX}/include/ && cp -r ${boost_PREFIX}/src/boost/boost ${boost_PREFIX}/include/
-    )
-    set(Boost_INCLUDE_DIRS ${boost_PREFIX})
-    include_directories(${Boost_INCLUDE_DIRS}/include)
-    message(STATUS "Using Boost from ${Boost_INCLUDE_DIRS}/include")
-else()
-    include_directories(${Boost_INCLUDE_DIRS})
-    message(STATUS "Using Boost from ${Boost_INCLUDE_DIRS}")
-endif()
+set(boost_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/boost)
+ExternalProject_Add(
+    boost
+    PREFIX ${boost_PREFIX}
+    URL "http://netcologne.dl.sourceforge.net/project/boost/boost/1.54.0/boost_1_54_0.tar.gz"
+    URL_MD5 "efbfbff5a85a9330951f243d0a46e4b9"
+    CONFIGURE_COMMAND ${boost_PREFIX}/src/boost/bootstrap.sh --with-libraries=serialization --prefix=${boost_PREFIX}
+    BUILD_COMMAND ./bjam
+    INSTALL_COMMAND ./bjam install
+    BUILD_IN_SOURCE 1
+)
+set(Boost_INCLUDE_DIRS ${boost_PREFIX})
+set(BOOST_LIBRARIES ${boost_PREFIX}/lib/libboost_serialization.a)
+include_directories(${Boost_INCLUDE_DIRS}/include)
+message(STATUS "Using Boost from ${Boost_INCLUDE_DIRS}/include")
 
 set(thrift_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/thrift)
 ExternalProject_Add(
@@ -104,6 +100,7 @@ set(PROTOBUF_GENERATOR ${protobuf_PREFIX}/bin/protoc)
 set(LINKLIBS    ${THRIFT_LIBRARIES}
                 ${MSGPACK_LIBRARIES}
                 ${PROTOBUF_LIBRARIES}
+                ${BOOST_LIBRARIES}
                 ${CMAKE_THREAD_LIBS_INIT}
 )
 
@@ -140,10 +137,13 @@ set_source_files_properties(
 )
 set(PROTOBUF_SERIALIZATION_SOURCES  ${test_SOURCE_DIR}/protobuf/test.pb.cc)
 
+set(BOOST_SERIALIZATION_SOURCES ${test_SOURCE_DIR}/boost/record.cpp)
+
 add_executable(test ${test_SOURCE_DIR}/test.cpp
                     ${THRIFT_SERIALIZATION_SOURCES}
                     ${PROTOBUF_SERIALIZATION_SOURCES}
+                    ${BOOST_SERIALIZATION_SOURCES}
 )
-add_dependencies(test thrift msgpack protobuf)
+add_dependencies(test thrift msgpack protobuf boost)
 target_link_libraries(test ${LINKLIBS})
 set_target_properties(test PROPERTIES COMPILE_FLAGS "-std=c++11")
