@@ -28,48 +28,51 @@ thrift_serialization_test(size_t iterations)
     
     using namespace thrift_test;
 
-    boost::shared_ptr<TMemoryBuffer>   buffer(new TMemoryBuffer());
-    boost::shared_ptr<TBinaryProtocol> protocol(new TBinaryProtocol(buffer));
+    boost::shared_ptr<TMemoryBuffer>   buffer1(new TMemoryBuffer());
+    boost::shared_ptr<TBinaryProtocol> protocol1(new TBinaryProtocol(buffer1));
 
-    Record a;
+    Record r1;
 
     for (size_t i = 0; i < kItegersCount; i++) {
-        a.ids.push_back(kIntegerValue);
+        r1.ids.push_back(kIntegerValue);
     }
 
     for (size_t i = 0; i < kStringsCount; i++) {
-        a.strings.push_back(kStringValue);
+        r1.strings.push_back(kStringValue);
     }
 
     std::string serialized;
 
-    a.write(protocol.get());
-    serialized = buffer->getBufferAsString();
+    r1.write(protocol1.get());
+    serialized = buffer1->getBufferAsString();
 
     // check if we can deserialize back
     boost::shared_ptr<TMemoryBuffer>   buffer2(new TMemoryBuffer());
     boost::shared_ptr<TBinaryProtocol> protocol2(new TBinaryProtocol(buffer2));
 
-    buffer2->resetBuffer((uint8_t*)serialized.data(), serialized.length());
-    Record a2;
-    a2.read(protocol2.get());
+    Record r2;
 
-    if (a != a2) {
+    buffer2->resetBuffer((uint8_t*)serialized.data(), serialized.length());
+    r2.read(protocol2.get());
+
+    if (r1 != r2) {
         throw std::logic_error("thrift's case: invariant failed");
     }
 
-    std::cout << "thrift: serialized object size = " << serialized.size() << " bytes" << std::endl;
+    std::cout << "thrift: size = " << serialized.size() << " bytes" << std::endl;
 
     auto start = std::chrono::high_resolution_clock::now();
     for (size_t i = 0; i < iterations; i++) {
-        buffer->resetBuffer();
-        a.write(protocol.get());
-        serialized = buffer->getBufferAsString();
+        buffer1->resetBuffer();
+        r1.write(protocol1.get());
+        serialized = buffer1->getBufferAsString();
+        buffer2->resetBuffer((uint8_t*)serialized.data(), serialized.length());
+        r2.read(protocol2.get());
     }
     auto finish = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
 
-    std::cout << "thrift: serialization time = " << duration << " milliseconds" << std::endl << std::endl;
+    std::cout << "thrift: time = " << duration << " milliseconds" << std::endl << std::endl;
 }
 
 void
@@ -77,38 +80,39 @@ protobuf_serialization_test(size_t iterations)
 {
     using namespace protobuf_test;
 
-    Record a;
+    Record r1;
 
     for (size_t i = 0; i < kItegersCount; i++) {
-        a.add_ids(kIntegerValue);
+        r1.add_ids(kIntegerValue);
     }
 
     for (size_t i = 0; i < kStringsCount; i++) {
-        a.add_strings(kStringValue);
+        r1.add_strings(kStringValue);
     }
 
     std::string serialized;
 
-    a.SerializeToString(&serialized);
+    r1.SerializeToString(&serialized);
 
     // check if we can deserialize back
-    Record a2;
-    bool ok = a2.ParseFromString(serialized);
-    if (!ok /*|| a2 != a*/) {
+    Record r2;
+    bool ok = r2.ParseFromString(serialized);
+    if (!ok /*|| r2 != r1*/) {
         throw std::logic_error("protobuf's case: invariant failed");
     }
 
-    std::cout << "protobuf: serialized object size = " << serialized.size() << " bytes" << std::endl;
+    std::cout << "protobuf: size = " << serialized.size() << " bytes" << std::endl;
 
     auto start = std::chrono::high_resolution_clock::now();
     for (size_t i = 0; i < iterations; i++) {
         serialized.clear();
-        a.SerializeToString(&serialized);
+        r1.SerializeToString(&serialized);
+        r2.ParseFromString(serialized);
     }
     auto finish = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
 
-    std::cout << "protobuf: serialization time = " << duration << " milliseconds" << std::endl << std::endl;
+    std::cout << "protobuf: time = " << duration << " milliseconds" << std::endl << std::endl;
 }
 
 int
