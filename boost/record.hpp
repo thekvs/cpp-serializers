@@ -1,5 +1,5 @@
-#ifndef __RECORD_HPP_INCLUDED__
-#define __RECORD_HPP_INCLUDED__
+#ifndef __BOOST_RECORD_HPP_INCLUDED__
+#define __BOOST_RECORD_HPP_INCLUDED__
 
 #include <vector>
 #include <string>
