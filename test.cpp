@@ -143,7 +143,7 @@ boost_serialization_test(size_t iterations)
         throw std::logic_error("boost's case: deserialization failed");
     }
 
-    std::cout << "boost: size = " << serialized.size() << " butes" << std::endl;
+    std::cout << "boost: size = " << serialized.size() << " bytes" << std::endl;
 
     auto start = std::chrono::high_resolution_clock::now();
     for (size_t i = 0; i < iterations; i++) {
