@@ -5,11 +5,17 @@ if (NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
     message(FATAL_ERROR "Doesn't support non 64-bit platforms")
 endif()
 
+include(CheckCXXCompilerFlag)
 include(FindThreads)
 include(CheckTypeSize)
 include(CheckIncludeFile)
 include(CheckCXXCompilerFlag)
 include(ExternalProject)
+
+CHECK_CXX_COMPILER_FLAG("-std=c++11" CXX11)
+if (NOT CXX11)
+    message(FATAL_ERROR "C++ compiler doesn't support C++11")
+endif()
 
 CHECK_INCLUDE_FILES("inttypes.h" HAVE_INTTYPES_H)
 CHECK_INCLUDE_FILES("netinet/in.h" HAVE_NETINET_IN_H)
