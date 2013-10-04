@@ -17,6 +17,8 @@
 
 #include "boost/record.hpp"
 
+#include "msgpack/record.hpp"
+
 const size_t      kItegersCount = 1000;
 const size_t      kStringsCount = 100;
 const int64_t     kIntegerValue = 26354;
@@ -155,6 +157,55 @@ boost_serialization_test(size_t iterations)
     std::cout << "boost: time = " << duration << " milliseconds" << std::endl << std::endl;
 }
 
+void
+msgpack_serialization_test(size_t iterations)
+{
+    using namespace msgpack_test;
+
+    Record r1, r2;
+
+    for (size_t i = 0; i < kItegersCount; i++) {
+        r1.ids.push_back(kIntegerValue);
+    }
+
+    for (size_t i = 0; i < kStringsCount; i++) {
+        r1.strings.push_back(kStringValue);
+    }
+
+    msgpack::sbuffer sbuf;
+
+    msgpack::pack(sbuf, r1);
+
+    std::string serialized(sbuf.data(), sbuf.size());
+ 
+    msgpack::unpacked msg;
+    msgpack::unpack(&msg, serialized.data(), serialized.size());
+ 
+    msgpack::object obj = msg.get();
+ 
+    obj.convert(&r2);
+
+    if (r1 != r2) {
+        throw std::logic_error("msgpack's case: deserialization failed");   
+    }
+
+    std::cout << "msgpack: size = " << serialized.size() << " bytes" << std::endl;
+
+    auto start = std::chrono::high_resolution_clock::now();
+    for (size_t i = 0; i < iterations; i++) {
+        sbuf.clear();
+        msgpack::pack(sbuf, r1);
+        msgpack::unpacked msg;
+        msgpack::unpack(&msg, sbuf.data(), sbuf.size());
+        msgpack::object obj = msg.get();
+        obj.convert(&r2);                
+    }
+    auto finish = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
+
+    std::cout << "msgpack: time = " << duration << " milliseconds" << std::endl << std::endl;
+}
+
 int
 main(int argc, char **argv)
 {
@@ -175,6 +226,7 @@ main(int argc, char **argv)
         thrift_serialization_test(iterations);
         protobuf_serialization_test(iterations);
         boost_serialization_test(iterations);
+        msgpack_serialization_test(iterations);
     } catch (std::exception &exc) {
         std::cerr << "Error: " << exc.what() << std::endl;
         return EXIT_FAILURE;
