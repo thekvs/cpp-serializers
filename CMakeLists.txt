@@ -5,7 +5,6 @@ if (NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
     message(FATAL_ERROR "Doesn't support non 64-bit platforms")
 endif()
 
-include(CheckCXXCompilerFlag)
 include(FindThreads)
 include(CheckTypeSize)
 include(CheckIncludeFile)
