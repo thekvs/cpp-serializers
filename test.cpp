@@ -1,4 +1,5 @@
 #include <string>
+#include <set>
 #include <iostream>
 #include <stdexcept>
 #include <memory>
@@ -252,22 +253,54 @@ main(int argc, char **argv)
     GOOGLE_PROTOBUF_VERIFY_VERSION;
 
     if (argc < 2) {
-        std::cout << "Usage: " << argv[0] << " iterations" << std::endl;
-        exit(0);
+        std::cout << "usage: " << argv[0] << " N [thrift protobuf boost msgpack cereal]" << std::endl << std::endl;
+        std::cout << "arguments: " << std::endl;
+        std::cout << " N  -- number of iterations" << std::endl << std::endl;
+        return EXIT_SUCCESS;
     }
 
-    auto iterations = boost::lexical_cast<size_t>(argv[1]);
+    size_t iterations;
+
+    try {
+        iterations = boost::lexical_cast<size_t>(argv[1]);
+    } catch (std::exception &exc) {
+        std::cerr << "Error: " << exc.what() << std::endl;
+        std::cerr << "First positional argument must be an integer." << std::endl;
+        return EXIT_FAILURE;
+    }
+
+    std::set<std::string> names;
+
+    if (argc > 2) {
+        for (int i = 2; i < argc; i++) {
+            names.insert(argv[i]);
+        }
+    }
 
     std::cout << "performing " << iterations << " iterations" << std::endl << std::endl;
 
     /*std::cout << "total size: " << sizeof(kIntegerValue) * kItegersCount + kStringValue.size() * kStringsCount << std::endl;*/
 
     try {
-        thrift_serialization_test(iterations);
-        protobuf_serialization_test(iterations);
-        boost_serialization_test(iterations);
-        msgpack_serialization_test(iterations);
-        cereal_serialization_test(iterations);
+        if (names.empty() || names.find("thrift") != names.end()) {
+            thrift_serialization_test(iterations);
+        }
+
+        if (names.empty() || names.find("protobuf") != names.end()) {
+            protobuf_serialization_test(iterations);
+        }
+
+        if (names.empty() || names.find("boost") != names.end()) {
+            boost_serialization_test(iterations);
+        }
+
+        if (names.empty() || names.find("msgpack") != names.end()) {
+            msgpack_serialization_test(iterations);
+        }
+
+        if (names.empty() || names.find("cereal") != names.end()) {
+            cereal_serialization_test(iterations);
+        }
     } catch (std::exception &exc) {
         std::cerr << "Error: " << exc.what() << std::endl;
         return EXIT_FAILURE;
