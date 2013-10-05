@@ -102,6 +102,18 @@ include_directories(${protobuf_PREFIX}/include)
 set(PROTOBUF_LIBRARIES ${protobuf_PREFIX}/lib/libprotobuf.a)
 set(PROTOBUF_GENERATOR ${protobuf_PREFIX}/bin/protoc)
 
+set(cereal_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/cereal)
+ExternalProject_Add(
+    cereal
+    PREFIX ${cereal_PREFIX}
+    URL "https://github.com/USCiLab/cereal/archive/v0.9.1.tar.gz"
+    URL_MD5 "8872d4444ff274ce6cd1ed364d0fc0ad"
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND ""
+    INSTALL_COMMAND mkdir -p ${cereal_PREFIX}/include/ && cp -r ${cereal_PREFIX}/src/cereal/include/cereal ${cereal_PREFIX}/include/
+)
+include_directories(${cereal_PREFIX}/include)
+
 set(LINKLIBS    ${THRIFT_LIBRARIES}
                 ${MSGPACK_LIBRARIES}
                 ${PROTOBUF_LIBRARIES}
@@ -144,11 +156,14 @@ set(PROTOBUF_SERIALIZATION_SOURCES  ${test_SOURCE_DIR}/protobuf/test.pb.cc)
 
 set(BOOST_SERIALIZATION_SOURCES ${test_SOURCE_DIR}/boost/record.cpp)
 
+set(CEREAL_SERIALIZATION_SOURCES ${test_SOURCE_DIR}/cereal/record.cpp)
+
 add_executable(test ${test_SOURCE_DIR}/test.cpp
                     ${THRIFT_SERIALIZATION_SOURCES}
                     ${PROTOBUF_SERIALIZATION_SOURCES}
                     ${BOOST_SERIALIZATION_SOURCES}
+                    ${CEREAL_SERIALIZATION_SOURCES}
 )
-add_dependencies(test thrift msgpack protobuf boost)
+add_dependencies(test thrift msgpack protobuf boost cereal)
 target_link_libraries(test ${LINKLIBS})
 set_target_properties(test PROPERTIES COMPILE_FLAGS "-std=c++11")

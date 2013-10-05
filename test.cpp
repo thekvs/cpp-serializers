@@ -19,6 +19,8 @@
 
 #include "msgpack/record.hpp"
 
+#include "cereal/record.hpp"
+
 const size_t      kItegersCount = 1000;
 const size_t      kStringsCount = 100;
 const int64_t     kIntegerValue = 26354;
@@ -206,6 +208,44 @@ msgpack_serialization_test(size_t iterations)
     std::cout << "msgpack: time = " << duration << " milliseconds" << std::endl << std::endl;
 }
 
+void
+cereal_serialization_test(size_t iterations)
+{
+    using namespace cereal_test;
+
+    Record r1, r2;
+
+    for (size_t i = 0; i < kItegersCount; i++) {
+        r1.ids.push_back(kIntegerValue);
+    }
+
+    for (size_t i = 0; i < kStringsCount; i++) {
+        r1.strings.push_back(kStringValue);
+    }
+
+    std::string serialized;
+
+    to_string(r1, serialized);
+    from_string(r2, serialized);
+
+    if (r1 != r2) {
+        throw std::logic_error("cereal's case: deserialization failed");
+    }
+
+    std::cout << "cereal: size = " << serialized.size() << " bytes" << std::endl;
+
+    auto start = std::chrono::high_resolution_clock::now();
+    for (size_t i = 0; i < iterations; i++) {
+        serialized.clear();
+        to_string(r1, serialized);
+        from_string(r2, serialized);
+    }
+    auto finish = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
+
+    std::cout << "cereal: time = " << duration << " milliseconds" << std::endl << std::endl;
+}
+
 int
 main(int argc, char **argv)
 {
@@ -227,6 +267,7 @@ main(int argc, char **argv)
         protobuf_serialization_test(iterations);
         boost_serialization_test(iterations);
         msgpack_serialization_test(iterations);
+        cereal_serialization_test(iterations);
     } catch (std::exception &exc) {
         std::cerr << "Error: " << exc.what() << std::endl;
         return EXIT_FAILURE;
