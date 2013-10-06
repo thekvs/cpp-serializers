@@ -14,15 +14,15 @@ $ make
 ```
 
 #### Usage
-1. Test all serializers, run each serializer 100000 times:
+1. Test _all_ serializers, run each serializer 100000 times:
 ```
 $ ./test 100000
 ```
-1. Test only protobuf serializer, run it 100000 times:
+1. Test only _protobuf_ serializer, run it 100000 times:
 ```
 $ ./test 100000 protobuf
 ```
-1. Test protobuf and cereal serializers only, run each of them 100000 times:
+1. Test _protobuf_ and _cereal_ serializers only, run each of them 100000 times:
 ```
 $ ./test 100000 protobuf cereal
 ```
@@ -30,7 +30,7 @@ $ ./test 100000 protobuf cereal
 #### Results
 
 Following results were obtained running 1000000 serialize-deserialize operations on typical desktop computer
-with Intel Core i5 processor. Exact versions of the libraries used are:
+with Intel Core i5 processor running Ubuntu 13.04. Exact versions of libraries used are:
 
 * boost 1.54.0
 * thrift 0.9.1
