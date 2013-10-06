@@ -1,7 +1,7 @@
 #### [Thrift](http://thrift.apache.org/) vs. [Protobuf](https://code.google.com/p/protobuf/) vs. [Boost.Serialization](http://www.boost.org/libs/serialization) vs. [Msgpack](http://msgpack.org/) vs. [Cereal](http://uscilab.github.io/cereal/index.html) serialization/deserialization time test for C++.
 
 #### Build
-This project does not have external library dependencies. All (boost, thift etc.) needed libraries are downloaded
+This project does not have external library dependencies. All (boost, thrift etc.) needed libraries are downloaded
 and built automatically, but you need enough free disk space. To build this project you need a compiler that supports
 C++11 features. Project was tested with GCC 4.7 (ubuntu 13.04).
 
