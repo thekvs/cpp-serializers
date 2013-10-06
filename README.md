@@ -32,11 +32,11 @@ $ ./test 100000 protobuf cereal
 Following results were obtained running 1000000 serialize-deserialize operations on typical desktop computer
 with Intel Core i5 processor. Exact versions of the libraries used are:
 
-1. boost 1.54.0
-1. thrift 0.9.1
-1. msgpack 0.5.4
-1. protobuf 2.5.0
-1. cereal 0.9.1
+* boost 1.54.0
+* thrift 0.9.1
+* msgpack 0.5.4
+* protobuf 2.5.0
+* cereal 0.9.1
 
 | serializer | object's size | total time |
 | ---------- | ------------- | ---------- |
