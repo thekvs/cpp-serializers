@@ -32,19 +32,19 @@ $ ./test 100000 protobuf cereal
 Following results were obtained running 1000000 serialize-deserialize operations on typical desktop computer
 with Intel Core i5 processor running Ubuntu 13.04. Exact versions of libraries used are:
 
-* boost 1.54.0
+* boost 1.55.0
 * thrift 0.9.1
-* msgpack 0.5.4
+* msgpack 0.5.8
 * protobuf 2.5.0
 * cereal 0.9.1
 
 | serializer | object's size | total time |
 | ---------- | ------------- | ---------- |
-| thrift     | 17017         | 22635      |
-| protobuf   | 12800         | 17252      |
-| boost      | 17470         | 23625      |
-| msgpack    | 11907         | 28243      |
-| cereal     | 17416         | 10659      |
+| thrift     | 17017         | 24047      |
+| protobuf   | 12800         | 17952      |
+| boost      | 17470         | 24100      |
+| msgpack    | 11907         | 24653      |
+| cereal     | 17416         | 10613      |
 
 Size mesuared in bytes, time mesuared in milliseconds.
 
