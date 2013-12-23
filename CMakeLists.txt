@@ -43,11 +43,11 @@ set(boost_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/boost)
 ExternalProject_Add(
     boost
     PREFIX ${boost_PREFIX}
-    URL "http://netcologne.dl.sourceforge.net/project/boost/boost/1.54.0/boost_1_54_0.tar.gz"
-    URL_MD5 "efbfbff5a85a9330951f243d0a46e4b9"
+    URL "http://netcologne.dl.sourceforge.net/project/boost/boost/1.55.0/boost_1_55_0.tar.gz"
+    URL_MD5 "93780777cfbf999a600f62883bd54b17"
     CONFIGURE_COMMAND ${boost_PREFIX}/src/boost/bootstrap.sh --with-libraries=serialization --prefix=${boost_PREFIX}
-    BUILD_COMMAND ./bjam
-    INSTALL_COMMAND ./bjam install
+    BUILD_COMMAND ./bjam link=static
+    INSTALL_COMMAND ./bjam link=static install
     BUILD_IN_SOURCE 1
 )
 set(Boost_INCLUDE_DIRS ${boost_PREFIX})
@@ -77,8 +77,8 @@ set(msgpack_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/msgpack)
 ExternalProject_Add(
     msgpack
     PREFIX ${msgpack_PREFIX}
-    URL "http://heanet.dl.sourceforge.net/project/msgpack/msgpack/cpp/msgpack-0.5.4.tar.gz"
-    URL_MD5 "18d96a3178f7cad73c0ca44f6284ae7d"
+    URL "https://github.com/msgpack/msgpack-c/releases/download/cpp-0.5.8/msgpack-0.5.8.tar.gz"
+    URL_MD5 "ea0bee0939d2980c0df91f0e4843ccc4"
     CONFIGURE_COMMAND CXX=${CMAKE_CXX_COMPILER} CC=${CMAKE_C_COMPILER} ${msgpack_PREFIX}/src/msgpack/configure --prefix=${msgpack_PREFIX} --enable-shared=no
     BUILD_COMMAND ${MAKE_PROGRAM}
     INSTALL_COMMAND ${MAKE_PROGRAM} install
