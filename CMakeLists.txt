@@ -1,4 +1,4 @@
-project(test)
+project(cpp_serializers)
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
 if (NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
@@ -27,7 +27,7 @@ if (HAVE_NETINET_IN_H)
     add_definitions("-DHAVE_NETINET_IN_H")
 endif()
 
-include_directories(${test_SOURCE_DIR})
+include_directories(${cpp_serializers_SOURCE_DIR})
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -W")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -W")
@@ -122,43 +122,43 @@ set(LINKLIBS    ${THRIFT_LIBRARIES}
 )
 
 add_custom_command(
-    DEPENDS ${test_SOURCE_DIR}/test.thrift
+    DEPENDS ${cpp_serializers_SOURCE_DIR}/test.thrift
     COMMAND ${THRIFT_GENERATOR}
-    ARGS -r -gen cpp -o ${test_SOURCE_DIR}/thrift/ ${test_SOURCE_DIR}/test.thrift
-    OUTPUT  "${test_SOURCE_DIR}/thrift/gen-cpp/test_constants.cpp"
-            "${test_SOURCE_DIR}/thrift/gen-cpp/test_types.cpp"
+    ARGS -r -gen cpp -o ${cpp_serializers_SOURCE_DIR}/thrift/ ${cpp_serializers_SOURCE_DIR}/test.thrift
+    OUTPUT  "${cpp_serializers_SOURCE_DIR}/thrift/gen-cpp/test_constants.cpp"
+            "${cpp_serializers_SOURCE_DIR}/thrift/gen-cpp/test_types.cpp"
     COMMENT "Executing Thrift compiler"
 )
 set_source_files_properties(
-    ${test_SOURCE_DIR}/thrift/gen-cpp/test_constants.cpp
-    ${test_SOURCE_DIR}/thrift/gen-cpp/test_types.cpp
-    ${test_SOURCE_DIR}/thrift/gen-cpp/test_constants.h
-    ${test_SOURCE_DIR}/thrift/gen-cpp/test_types.h
+    ${cpp_serializers_SOURCE_DIR}/thrift/gen-cpp/test_constants.cpp
+    ${cpp_serializers_SOURCE_DIR}/thrift/gen-cpp/test_types.cpp
+    ${cpp_serializers_SOURCE_DIR}/thrift/gen-cpp/test_constants.h
+    ${cpp_serializers_SOURCE_DIR}/thrift/gen-cpp/test_types.h
     PROPERTIES GENERATED TRUE
 )
-set(THRIFT_SERIALIZATION_SOURCES    ${test_SOURCE_DIR}/thrift/gen-cpp/test_constants.cpp
-                                    ${test_SOURCE_DIR}/thrift/gen-cpp/test_types.cpp
+set(THRIFT_SERIALIZATION_SOURCES    ${cpp_serializers_SOURCE_DIR}/thrift/gen-cpp/test_constants.cpp
+                                    ${cpp_serializers_SOURCE_DIR}/thrift/gen-cpp/test_types.cpp
 )
 
 add_custom_command(
-    DEPENDS ${test_SOURCE_DIR}/test.proto
+    DEPENDS ${cpp_serializers_SOURCE_DIR}/test.proto
     COMMAND ${PROTOBUF_GENERATOR}
-    ARGS -I${test_SOURCE_DIR} --cpp_out=${test_SOURCE_DIR}/protobuf ${test_SOURCE_DIR}/test.proto
-    OUTPUT  "${test_SOURCE_DIR}/protobuf/test.pb.cc"
+    ARGS -I${cpp_serializers_SOURCE_DIR} --cpp_out=${cpp_serializers_SOURCE_DIR}/protobuf ${cpp_serializers_SOURCE_DIR}/test.proto
+    OUTPUT  "${cpp_serializers_SOURCE_DIR}/protobuf/test.pb.cc"
     COMMENT "Executing Protobuf compiler"
 )
 set_source_files_properties(
-    ${test_SOURCE_DIR}/protobuf/test.pb.cc
-    ${test_SOURCE_DIR}/protobuf/test.pb.h
+    ${cpp_serializers_SOURCE_DIR}/protobuf/test.pb.cc
+    ${cpp_serializers_SOURCE_DIR}/protobuf/test.pb.h
     PROPERTIES GENERATED TRUE
 )
-set(PROTOBUF_SERIALIZATION_SOURCES  ${test_SOURCE_DIR}/protobuf/test.pb.cc)
+set(PROTOBUF_SERIALIZATION_SOURCES  ${cpp_serializers_SOURCE_DIR}/protobuf/test.pb.cc)
 
-set(BOOST_SERIALIZATION_SOURCES ${test_SOURCE_DIR}/boost/record.cpp)
+set(BOOST_SERIALIZATION_SOURCES ${cpp_serializers_SOURCE_DIR}/boost/record.cpp)
 
-set(CEREAL_SERIALIZATION_SOURCES ${test_SOURCE_DIR}/cereal/record.cpp)
+set(CEREAL_SERIALIZATION_SOURCES ${cpp_serializers_SOURCE_DIR}/cereal/record.cpp)
 
-add_executable(test ${test_SOURCE_DIR}/test.cpp
+add_executable(test ${cpp_serializers_SOURCE_DIR}/test.cpp
                     ${THRIFT_SERIALIZATION_SOURCES}
                     ${PROTOBUF_SERIALIZATION_SOURCES}
                     ${BOOST_SERIALIZATION_SOURCES}
