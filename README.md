@@ -1,8 +1,8 @@
 #### [Thrift](http://thrift.apache.org/) vs. [Protobuf](https://code.google.com/p/protobuf/) vs. [Boost.Serialization](http://www.boost.org/libs/serialization) vs. [Msgpack](http://msgpack.org/) vs. [Cereal](http://uscilab.github.io/cereal/index.html) serialization/deserialization time test for C++.
 
 #### Build
-This project does not have external library dependencies. All (boost, thrift etc.) needed libraries are downloaded
-and built automatically, but you need enough free disk space. To build this project you need a compiler that supports
+This project does not have any external library dependencies. All (boost, thrift etc.) needed libraries are downloaded
+and built automatically, but you need enough free disk space to build all components. To build this project you need a compiler that supports
 C++11 features. Project was tested with GCC 4.7 (ubuntu 13.04).
 
 ```
@@ -29,8 +29,8 @@ $ ./test 100000 protobuf cereal
 
 #### Results
 
-Following results were obtained running 1000000 serialize-deserialize operations on typical desktop computer
-with Intel Core i5 processor running Ubuntu 13.04. Exact versions of libraries used are:
+Following results were obtained running 1000000 serialize-deserialize operations 20 times and then averaging results
+on a typical desktop computer with Intel Core i5 processor running Ubuntu 13.04. Exact versions of libraries used are:
 
 * boost 1.55.0
 * thrift 0.9.1
