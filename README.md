@@ -3,7 +3,7 @@
 #### Build
 This project does not have any external library dependencies. All (boost, thrift etc.) needed libraries are downloaded
 and built automatically, but you need enough free disk space to build all components. To build this project you need a compiler that supports
-C++11 features. Project was tested with GCC 4.7 (ubuntu 13.04).
+C++11 features. Project was tested with GCC 4.8.2 (Ubuntu 14.04).
 
 ```
 $ git clone https://github.com/thekvs/cpp-serializers.git
@@ -29,8 +29,8 @@ $ ./test 100000 protobuf cereal
 
 #### Results
 
-Following results were obtained running 1000000 serialize-deserialize operations 20 times and then averaging results
-on a typical desktop computer with Intel Core i5 processor running Ubuntu 13.04. Exact versions of libraries used are:
+Following results were obtained running 1000000 serialize-deserialize operations 50 times and then averaging results
+on a typical desktop computer with Intel Core i5 processor running Ubuntu 14.04. Exact versions of libraries used are:
 
 * boost 1.55.0
 * thrift 0.9.1
@@ -38,13 +38,13 @@ on a typical desktop computer with Intel Core i5 processor running Ubuntu 13.04.
 * protobuf 2.5.0
 * cereal 0.9.1
 
-| serializer | object's size | total time |
-| ---------- | ------------- | ---------- |
-| thrift     | 17017         | 24047      |
-| protobuf   | 12800         | 17952      |
-| boost      | 17470         | 24100      |
-| msgpack    | 11907         | 24653      |
-| cereal     | 17416         | 10613      |
+| serializer | object's size | avg. total time |
+| ---------- | ------------- | --------------- |
+| thrift     | 17017         | 24490           |
+| protobuf   | 12571         | 21110           |
+| boost      | 17470         | 22700           |
+| msgpack    | 11902         | 18470           |
+| cereal     | 17416         | 11020           |
 
 Size mesuared in bytes, time mesuared in milliseconds.
 

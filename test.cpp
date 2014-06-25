@@ -15,17 +15,11 @@
 #include "thrift/gen-cpp/test_constants.h"
 
 #include "protobuf/test.pb.h"
-
 #include "boost/record.hpp"
-
 #include "msgpack/record.hpp"
-
 #include "cereal/record.hpp"
 
-const size_t      kItegersCount = 1000;
-const size_t      kStringsCount = 100;
-const int64_t     kIntegerValue = 26354;
-const std::string kStringValue  = "shgfkghsdfjhgsfjhfgjhfgjsffghgsfdhgsfdfkdjhfioukjhkfdljgdfkgvjafdhasgdfwurtjkghfsdjkfg";
+#include "data.hpp"
 
 void
 thrift_serialization_test(size_t iterations)
@@ -40,8 +34,8 @@ thrift_serialization_test(size_t iterations)
 
     Record r1;
 
-    for (size_t i = 0; i < kItegersCount; i++) {
-        r1.ids.push_back(kIntegerValue);
+    for (size_t i = 0; i < kItegers.size(); i++) {
+        r1.ids.push_back(kItegers[i]);
     }
 
     for (size_t i = 0; i < kStringsCount; i++) {
@@ -89,8 +83,8 @@ protobuf_serialization_test(size_t iterations)
 
     Record r1;
 
-    for (size_t i = 0; i < kItegersCount; i++) {
-        r1.add_ids(kIntegerValue);
+    for (size_t i = 0; i < kItegers.size(); i++) {
+        r1.add_ids(kItegers[i]);
     }
 
     for (size_t i = 0; i < kStringsCount; i++) {
@@ -129,8 +123,8 @@ boost_serialization_test(size_t iterations)
 
     Record r1, r2;
 
-    for (size_t i = 0; i < kItegersCount; i++) {
-        r1.ids.push_back(kIntegerValue);
+    for (size_t i = 0; i < kItegers.size(); i++) {
+        r1.ids.push_back(kItegers[i]);
     }
 
     for (size_t i = 0; i < kStringsCount; i++) {
@@ -167,8 +161,8 @@ msgpack_serialization_test(size_t iterations)
 
     Record r1, r2;
 
-    for (size_t i = 0; i < kItegersCount; i++) {
-        r1.ids.push_back(kIntegerValue);
+    for (size_t i = 0; i < kItegers.size(); i++) {
+        r1.ids.push_back(kItegers[i]);
     }
 
     for (size_t i = 0; i < kStringsCount; i++) {
@@ -216,8 +210,8 @@ cereal_serialization_test(size_t iterations)
 
     Record r1, r2;
 
-    for (size_t i = 0; i < kItegersCount; i++) {
-        r1.ids.push_back(kIntegerValue);
+    for (size_t i = 0; i < kItegers.size(); i++) {
+        r1.ids.push_back(kItegers[i]);
     }
 
     for (size_t i = 0; i < kStringsCount; i++) {
