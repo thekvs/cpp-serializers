@@ -38,13 +38,14 @@ on a typical desktop computer with Intel Core i5 processor running Ubuntu 14.04.
 * protobuf 2.5.0
 * cereal 0.9.1
 
-| serializer | object's size | avg. total time |
-| ---------- | ------------- | --------------- |
-| thrift     | 17017         | 24490           |
-| protobuf   | 12571         | 21110           |
-| boost      | 17470         | 22700           |
-| msgpack    | 11902         | 18470           |
-| cereal     | 17416         | 11020           |
+| serializer     | object's size | avg. total time |
+| -------------- | ------------- | --------------- |
+| thrift-binary  | 17017         | 24490           |
+| thrift-compact | 11597         | 29760           |
+| protobuf       | 12571         | 21110           |
+| boost          | 17470         | 22700           |
+| msgpack        | 11902         | 18470           |
+| cereal         | 17416         | 11020           |
 
 Size mesuared in bytes, time mesuared in milliseconds.
 

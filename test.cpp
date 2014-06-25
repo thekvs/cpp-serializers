@@ -10,6 +10,7 @@
 
 #include <thrift/transport/TBufferTransports.h>
 #include <thrift/protocol/TBinaryProtocol.h>
+#include <thrift/protocol/TCompactProtocol.h>
 
 #include "thrift/gen-cpp/test_types.h"
 #include "thrift/gen-cpp/test_constants.h"
@@ -21,16 +22,28 @@
 
 #include "data.hpp"
 
+enum class ThriftSerializationProto {
+    Binary,
+    Compact
+};
+
 void
-thrift_serialization_test(size_t iterations)
+thrift_serialization_test(size_t iterations, ThriftSerializationProto proto = ThriftSerializationProto::Binary)
 {
     using apache::thrift::transport::TMemoryBuffer;
     using apache::thrift::protocol::TBinaryProtocol;
+    using apache::thrift::protocol::TCompactProtocol;
     
     using namespace thrift_test;
 
-    boost::shared_ptr<TMemoryBuffer>   buffer1(new TMemoryBuffer());
-    boost::shared_ptr<TBinaryProtocol> protocol1(new TBinaryProtocol(buffer1));
+    boost::shared_ptr<TMemoryBuffer> buffer1(new TMemoryBuffer());
+    boost::shared_ptr<TMemoryBuffer> buffer2(new TMemoryBuffer());
+
+    TBinaryProtocol binary_protocol1(buffer1);
+    TBinaryProtocol binary_protocol2(buffer2);
+
+    TCompactProtocol compact_protocol1(buffer1);
+    TCompactProtocol compact_protocol2(buffer2);
 
     Record r1;
 
@@ -44,36 +57,62 @@ thrift_serialization_test(size_t iterations)
 
     std::string serialized;
 
-    r1.write(protocol1.get());
+    if (proto == ThriftSerializationProto::Binary) {
+        r1.write(&binary_protocol1);
+    } else if (proto == ThriftSerializationProto::Compact) {
+        r1.write(&compact_protocol1);
+    }
+
     serialized = buffer1->getBufferAsString();
 
     // check if we can deserialize back
-    boost::shared_ptr<TMemoryBuffer>   buffer2(new TMemoryBuffer());
-    boost::shared_ptr<TBinaryProtocol> protocol2(new TBinaryProtocol(buffer2));
-
     Record r2;
 
     buffer2->resetBuffer((uint8_t*)serialized.data(), serialized.length());
-    r2.read(protocol2.get());
+
+    if (proto == ThriftSerializationProto::Binary) {
+        r2.read(&binary_protocol2);
+    } else if (proto == ThriftSerializationProto::Compact) {
+        r2.read(&compact_protocol2);
+    }
 
     if (r1 != r2) {
         throw std::logic_error("thrift's case: deserialization failed");
     }
 
-    std::cout << "thrift: size = " << serialized.size() << " bytes" << std::endl;
+    std::string tag;
+
+    if (proto == ThriftSerializationProto::Binary) {
+        tag = "thrift-binary:";
+    } else if (proto == ThriftSerializationProto::Compact) {
+        tag = "thrift-compact:";
+    }
+
+    std::cout << tag << " size = " << serialized.size() << " bytes" << std::endl;
 
     auto start = std::chrono::high_resolution_clock::now();
     for (size_t i = 0; i < iterations; i++) {
         buffer1->resetBuffer();
-        r1.write(protocol1.get());
+
+        if (proto == ThriftSerializationProto::Binary) {
+            r1.write(&binary_protocol1);
+        } else if (proto == ThriftSerializationProto::Compact) {
+            r1.write(&compact_protocol1);
+        }
+
         serialized = buffer1->getBufferAsString();
         buffer2->resetBuffer((uint8_t*)serialized.data(), serialized.length());
-        r2.read(protocol2.get());
+
+        if (proto == ThriftSerializationProto::Binary) {
+            r2.read(&binary_protocol2);
+        } else if (proto == ThriftSerializationProto::Compact) {
+            r2.read(&compact_protocol2);
+        }
     }
     auto finish = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
 
-    std::cout << "thrift: time = " << duration << " milliseconds" << std::endl << std::endl;
+    std::cout << tag << " time = " << duration << " milliseconds" << std::endl << std::endl;
 }
 
 void
@@ -247,7 +286,7 @@ main(int argc, char **argv)
     GOOGLE_PROTOBUF_VERIFY_VERSION;
 
     if (argc < 2) {
-        std::cout << "usage: " << argv[0] << " N [thrift protobuf boost msgpack cereal]" << std::endl << std::endl;
+        std::cout << "usage: " << argv[0] << " N [thrift-binary thrift-compact protobuf boost msgpack cereal]" << std::endl << std::endl;
         std::cout << "arguments: " << std::endl;
         std::cout << " N  -- number of iterations" << std::endl << std::endl;
         return EXIT_SUCCESS;
@@ -276,8 +315,12 @@ main(int argc, char **argv)
     /*std::cout << "total size: " << sizeof(kIntegerValue) * kItegersCount + kStringValue.size() * kStringsCount << std::endl;*/
 
     try {
-        if (names.empty() || names.find("thrift") != names.end()) {
-            thrift_serialization_test(iterations);
+        if (names.empty() || names.find("thrift-binary") != names.end()) {
+            thrift_serialization_test(iterations, ThriftSerializationProto::Binary);
+        }
+
+        if (names.empty() || names.find("thrift-compact") != names.end()) {
+            thrift_serialization_test(iterations, ThriftSerializationProto::Compact);
         }
 
         if (names.empty() || names.find("protobuf") != names.end()) {
