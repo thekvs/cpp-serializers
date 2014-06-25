@@ -343,5 +343,7 @@ main(int argc, char **argv)
         return EXIT_FAILURE;
     }
 
+    google::protobuf::ShutdownProtobufLibrary();
+
     return EXIT_SUCCESS;
 }
