@@ -36,7 +36,7 @@ on a typical desktop computer with Intel Core i5 processor running Ubuntu 14.04.
 * thrift 0.9.1
 * msgpack 0.5.8
 * protobuf 2.5.0
-* cereal 0.9.1
+* cereal 1.0.0
 
 | serializer     | object's size | avg. total time |
 | -------------- | ------------- | --------------- |
@@ -45,7 +45,7 @@ on a typical desktop computer with Intel Core i5 processor running Ubuntu 14.04.
 | protobuf       | 12571         | 21110           |
 | boost          | 17470         | 22700           |
 | msgpack        | 11902         | 18470           |
-| cereal         | 17416         | 11020           |
+| cereal         | 17416         | 10770           |
 
 Size mesuared in bytes, time mesuared in milliseconds.
 
