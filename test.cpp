@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <memory>
 #include <chrono>
+#include <sstream>
 
 #include <boost/shared_ptr.hpp>
 #include <boost/lexical_cast.hpp>
@@ -19,6 +20,7 @@
 #include "boost/record.hpp"
 #include "msgpack/record.hpp"
 #include "cereal/record.hpp"
+#include "avro/record.hpp"
 
 #include "data.hpp"
 
@@ -47,8 +49,8 @@ thrift_serialization_test(size_t iterations, ThriftSerializationProto proto = Th
 
     Record r1;
 
-    for (size_t i = 0; i < kItegers.size(); i++) {
-        r1.ids.push_back(kItegers[i]);
+    for (size_t i = 0; i < kIntegers.size(); i++) {
+        r1.ids.push_back(kIntegers[i]);
     }
 
     for (size_t i = 0; i < kStringsCount; i++) {
@@ -122,8 +124,8 @@ protobuf_serialization_test(size_t iterations)
 
     Record r1;
 
-    for (size_t i = 0; i < kItegers.size(); i++) {
-        r1.add_ids(kItegers[i]);
+    for (size_t i = 0; i < kIntegers.size(); i++) {
+        r1.add_ids(kIntegers[i]);
     }
 
     for (size_t i = 0; i < kStringsCount; i++) {
@@ -162,8 +164,8 @@ boost_serialization_test(size_t iterations)
 
     Record r1, r2;
 
-    for (size_t i = 0; i < kItegers.size(); i++) {
-        r1.ids.push_back(kItegers[i]);
+    for (size_t i = 0; i < kIntegers.size(); i++) {
+        r1.ids.push_back(kIntegers[i]);
     }
 
     for (size_t i = 0; i < kStringsCount; i++) {
@@ -200,8 +202,8 @@ msgpack_serialization_test(size_t iterations)
 
     Record r1, r2;
 
-    for (size_t i = 0; i < kItegers.size(); i++) {
-        r1.ids.push_back(kItegers[i]);
+    for (size_t i = 0; i < kIntegers.size(); i++) {
+        r1.ids.push_back(kIntegers[i]);
     }
 
     for (size_t i = 0; i < kStringsCount; i++) {
@@ -249,8 +251,8 @@ cereal_serialization_test(size_t iterations)
 
     Record r1, r2;
 
-    for (size_t i = 0; i < kItegers.size(); i++) {
-        r1.ids.push_back(kItegers[i]);
+    for (size_t i = 0; i < kIntegers.size(); i++) {
+        r1.ids.push_back(kIntegers[i]);
     }
 
     for (size_t i = 0; i < kStringsCount; i++) {
@@ -280,13 +282,68 @@ cereal_serialization_test(size_t iterations)
     std::cout << "cereal: time = " << duration << " milliseconds" << std::endl << std::endl;
 }
 
+void
+avro_serialization_test(size_t iterations)
+{
+    using namespace avro_test;
+
+    Record r1, r2;
+
+    for (size_t i = 0; i < kIntegers.size(); i++) {
+        r1.ids.push_back(kIntegers[i]);
+    }
+
+    for (size_t i = 0; i < kStringsCount; i++) {
+        r1.strings.push_back(kStringValue);
+    }
+
+    std::auto_ptr<avro::OutputStream> out = avro::memoryOutputStream();
+    avro::EncoderPtr encoder = avro::binaryEncoder();
+
+    encoder->init(*out);
+    avro::encode(*encoder, r1);
+
+    auto serialized_size = out->byteCount();
+
+    std::auto_ptr<avro::InputStream> in = avro::memoryInputStream(*out);
+    avro::DecoderPtr decoder = avro::binaryDecoder();
+
+    decoder->init(*in);
+    avro::decode(*decoder, r2);
+
+    if (r1.ids != r2.ids || r1.strings != r2.strings ||
+        r2.ids.size() != kIntegers.size() || r2.strings.size() != kStringsCount) {
+        throw std::logic_error("avro's case: deserialization failed");
+    }
+
+    std::cout << "avro: size = " << serialized_size << " bytes" << std::endl;
+
+    auto start = std::chrono::high_resolution_clock::now();
+    for (size_t i = 0; i < iterations; i++) {
+        auto out = avro::memoryOutputStream();
+        auto encoder = avro::binaryEncoder();
+        encoder->init(*out);
+        avro::encode(*encoder, r1);
+
+        auto in = avro::memoryInputStream(*out);
+        auto decoder = avro::binaryDecoder();
+        decoder->init(*in);
+        avro::decode(*decoder, r2);
+    }
+    auto finish = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
+
+    std::cout << "avro: time = " << duration << " milliseconds" << std::endl << std::endl;
+}
+
 int
 main(int argc, char **argv)
 {
     GOOGLE_PROTOBUF_VERIFY_VERSION;
 
     if (argc < 2) {
-        std::cout << "usage: " << argv[0] << " N [thrift-binary thrift-compact protobuf boost msgpack cereal]" << std::endl << std::endl;
+        std::cout << "usage: " << argv[0] << " N [thrift-binary thrift-compact protobuf boost msgpack cereal avro]";
+        std::cout << std::endl << std::endl;
         std::cout << "arguments: " << std::endl;
         std::cout << " N  -- number of iterations" << std::endl << std::endl;
         return EXIT_SUCCESS;
@@ -312,7 +369,7 @@ main(int argc, char **argv)
 
     std::cout << "performing " << iterations << " iterations" << std::endl << std::endl;
 
-    /*std::cout << "total size: " << sizeof(kIntegerValue) * kItegersCount + kStringValue.size() * kStringsCount << std::endl;*/
+    /*std::cout << "total size: " << sizeof(kIntegerValue) * kIntegersCount + kStringValue.size() * kStringsCount << std::endl;*/
 
     try {
         if (names.empty() || names.find("thrift-binary") != names.end()) {
@@ -337,6 +394,10 @@ main(int argc, char **argv)
 
         if (names.empty() || names.find("cereal") != names.end()) {
             cereal_serialization_test(iterations);
+        }
+
+        if (names.empty() || names.find("avro") != names.end()) {
+            avro_serialization_test(iterations);
         }
     } catch (std::exception &exc) {
         std::cerr << "Error: " << exc.what() << std::endl;

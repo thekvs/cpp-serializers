@@ -1,4 +1,4 @@
-#### [Thrift](http://thrift.apache.org/) vs. [Protobuf](https://code.google.com/p/protobuf/) vs. [Boost.Serialization](http://www.boost.org/libs/serialization) vs. [Msgpack](http://msgpack.org/) vs. [Cereal](http://uscilab.github.io/cereal/index.html) serialization/deserialization time test for C++.
+#### [Thrift](http://thrift.apache.org/) vs. [Protobuf](https://code.google.com/p/protobuf/) vs. [Boost.Serialization](http://www.boost.org/libs/serialization) vs. [Msgpack](http://msgpack.org/) vs. [Cereal](http://uscilab.github.io/cereal/index.html) vs. [Avro](http://avro.apache.org/) serialization/deserialization time test for C++.
 
 #### Build
 This project does not have any external library dependencies. All (boost, thrift etc.) needed libraries are downloaded
@@ -37,6 +37,7 @@ on a typical desktop computer with Intel Core i5 processor running Ubuntu 14.04.
 * msgpack 0.5.8
 * protobuf 2.5.0
 * cereal 1.0.0
+* avro 1.7.6
 
 | serializer     | object's size | avg. total time |
 | -------------- | ------------- | --------------- |
@@ -46,6 +47,7 @@ on a typical desktop computer with Intel Core i5 processor running Ubuntu 14.04.
 | boost          | 17470         | 22700           |
 | msgpack        | 11902         | 18470           |
 | cereal         | 17416         | 10770           |
+| avro           | 12288         | 33210           |
 
 Size mesuared in bytes, time mesuared in milliseconds.
 

@@ -1,0 +1,20 @@
+{
+    "type": "record",
+    "name": "Record",
+    "fields": [
+        {
+            "name": "ids",
+            "type": {
+                "type": "array",
+                "items": "long"
+            }
+        },
+        {
+            "name": "strings",
+            "type": {
+                "type": "array",
+                "items": "string"
+            }
+        }
+    ]
+}

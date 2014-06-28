@@ -39,14 +39,20 @@ else()
     set(MAKE_PROGRAM "make")
 endif()
 
+find_package(ZLIB)
+if (NOT ZLIB_FOUND)
+    message(FATAL_ERROR "Couldn't find zlib library")
+endif()
+include_directories(${ZLIB_INCLUDE_DIRS})
+
 set(boost_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/boost)
 ExternalProject_Add(
     boost
     PREFIX ${boost_PREFIX}
     URL "http://netcologne.dl.sourceforge.net/project/boost/boost/1.55.0/boost_1_55_0.tar.gz"
     URL_MD5 "93780777cfbf999a600f62883bd54b17"
-    CONFIGURE_COMMAND ${boost_PREFIX}/src/boost/bootstrap.sh --with-libraries=serialization --prefix=${boost_PREFIX}
-    BUILD_COMMAND ./bjam link=static
+    CONFIGURE_COMMAND ${boost_PREFIX}/src/boost/bootstrap.sh --with-libraries=serialization,filesystem,system,program_options,iostreams --prefix=${boost_PREFIX}
+    BUILD_COMMAND ./bjam link=static cxxflags='-fPIC'
     INSTALL_COMMAND ./bjam link=static install
     BUILD_IN_SOURCE 1
 )
@@ -59,6 +65,7 @@ set(thrift_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/thrift)
 ExternalProject_Add(
     thrift
     PREFIX ${thrift_PREFIX}
+    DEPENDS boost
     URL "http://www.eu.apache.org/dist/thrift/0.9.1/thrift-0.9.1.tar.gz"
     URL_MD5 "d2e46148f6e800a9492dbd848c66ab6e"
     CONFIGURE_COMMAND CXX=${CMAKE_CXX_COMPILER} CC=${CMAKE_C_COMPILER} ${thrift_PREFIX}/src/thrift/configure --prefix=${thrift_PREFIX} --with-boost=${Boost_INCLUDE_DIRS} --enable-shared=no --with-libevent=no --with-c_glib=no --with-java=no --with-erlang=no --with-python=no --with-perl=no --with-php=no --with-php_extension=no --with-ruby=no --with-haskell=no --with-go=no --with-d=no
@@ -69,9 +76,6 @@ ExternalProject_Add(
 include_directories(${thrift_PREFIX}/include)
 set(THRIFT_LIBRARIES ${thrift_PREFIX}/lib/libthrift.a)
 set(THRIFT_GENERATOR ${thrift_PREFIX}/bin/thrift)
-if (NOT Boost_FOUND)
-    add_dependencies(thrift boost)
-endif()
 
 set(msgpack_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/msgpack)
 ExternalProject_Add(
@@ -114,11 +118,30 @@ ExternalProject_Add(
 )
 include_directories(${cereal_PREFIX}/include)
 
+set(avro_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/avro)
+ExternalProject_Add(
+    avro
+    DEPENDS boost
+    PREFIX ${avro_PREFIX}
+    URL "http://www.eu.apache.org/dist/avro/avro-1.7.6/avro-src-1.7.6.tar.gz"
+    URL_MD5 "adcbd74cb21f7ff1fe6ac1636212e43b"
+    CONFIGURE_COMMAND cmake -DBOOST_INCLUDEDIR=${boost_PREFIX}/include -DBOOST_LIBRARYDIR=${boost_PREFIX}/lib -DBoost_NO_SYSTEM_PATHS=ON -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX=${avro_PREFIX} -DBUILD_SHARED_LIBS=OFF ${avro_PREFIX}/src/avro/lang/c++/
+    # Due to some issues with using statically built boost libraries AND zlib in avro tests
+    # build only necessary parts and install them in a very hackish way.
+    BUILD_COMMAND make avrocpp_s avrogencpp
+    INSTALL_COMMAND mkdir -p ${avro_PREFIX}/include/avro ${avro_PREFIX}/lib ${avro_PREFIX}/bin && cp ${avro_PREFIX}/src/avro-build/avrogencpp ${avro_PREFIX}/bin && cp ${avro_PREFIX}/src/avro-build/libavrocpp_s.a ${avro_PREFIX}/lib && cd ${avro_PREFIX}/src/avro/lang/c++/api/ && cp -r . ${avro_PREFIX}/include/avro/
+)
+include_directories(${avro_PREFIX}/include)
+set(AVRO_LIBRARIES ${avro_PREFIX}/lib/libavrocpp_s.a)
+set(AVRO_GENERATOR ${avro_PREFIX}/bin/avrogencpp)
+
 set(LINKLIBS    ${THRIFT_LIBRARIES}
                 ${MSGPACK_LIBRARIES}
                 ${PROTOBUF_LIBRARIES}
                 ${BOOST_LIBRARIES}
+                ${AVRO_LIBRARIES}
                 ${CMAKE_THREAD_LIBS_INIT}
+                ${ZLIB_LIBRARIES}
 )
 
 add_custom_command(
@@ -154,8 +177,20 @@ set_source_files_properties(
 )
 set(PROTOBUF_SERIALIZATION_SOURCES  ${cpp_serializers_SOURCE_DIR}/protobuf/test.pb.cc)
 
-set(BOOST_SERIALIZATION_SOURCES ${cpp_serializers_SOURCE_DIR}/boost/record.cpp)
+add_custom_command(
+    DEPENDS ${cpp_serializers_SOURCE_DIR}/test.json
+    COMMAND ${AVRO_GENERATOR}
+    ARGS --input ${cpp_serializers_SOURCE_DIR}/test.json --output ${cpp_serializers_SOURCE_DIR}/avro/record.hpp --namespace avro_test
+    OUTPUT  "${cpp_serializers_SOURCE_DIR}/avro/record.hpp"
+    COMMENT "Executing Avro compiler"
+)
+set_source_files_properties(
+    ${cpp_serializers_SOURCE_DIR}/avro/record.hpp
+    PROPERTIES GENERATED TRUE
+)
+set(AVRO_SERIALIZATION_SOURCES ${cpp_serializers_SOURCE_DIR}/avro/record.hpp)
 
+set(BOOST_SERIALIZATION_SOURCES ${cpp_serializers_SOURCE_DIR}/boost/record.cpp)
 set(CEREAL_SERIALIZATION_SOURCES ${cpp_serializers_SOURCE_DIR}/cereal/record.cpp)
 
 add_executable(test ${cpp_serializers_SOURCE_DIR}/test.cpp
@@ -163,7 +198,8 @@ add_executable(test ${cpp_serializers_SOURCE_DIR}/test.cpp
                     ${PROTOBUF_SERIALIZATION_SOURCES}
                     ${BOOST_SERIALIZATION_SOURCES}
                     ${CEREAL_SERIALIZATION_SOURCES}
+                    ${AVRO_SERIALIZATION_SOURCES}
 )
-add_dependencies(test thrift msgpack protobuf boost cereal)
+add_dependencies(test thrift msgpack protobuf boost cereal avro)
 target_link_libraries(test ${LINKLIBS})
 set_target_properties(test PROPERTIES COMPILE_FLAGS "-std=c++11")
