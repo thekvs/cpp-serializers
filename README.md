@@ -14,15 +14,15 @@ $ make
 ```
 
 #### Usage
-1. Test __all__ serializers, run each serializer 100000 times:
+* Test __all__ serializers, run each serializer 100000 times:
 ```
 $ ./test 100000
 ```
-1. Test only __protobuf__ serializer, run it 100000 times:
+* Test only __protobuf__ serializer, run it 100000 times:
 ```
 $ ./test 100000 protobuf
 ```
-1. Test __protobuf__ and __cereal__ serializers only, run each of them 100000 times:
+* Test __protobuf__ and __cereal__ serializers only, run each of them 100000 times:
 ```
 $ ./test 100000 protobuf cereal
 ```
