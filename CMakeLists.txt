@@ -74,8 +74,8 @@ set(msgpack_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/msgpack)
 ExternalProject_Add(
     msgpack
     PREFIX ${msgpack_PREFIX}
-    URL "https://github.com/msgpack/msgpack-c/releases/download/cpp-0.5.8/msgpack-0.5.8.tar.gz"
-    URL_MD5 "ea0bee0939d2980c0df91f0e4843ccc4"
+    URL "https://github.com/msgpack/msgpack-c/releases/download/cpp-0.5.9/msgpack-0.5.9.tar.gz"
+    URL_MD5 "7645691e6966421c817a0b6f6f306112"
     CONFIGURE_COMMAND CXX=${CMAKE_CXX_COMPILER} CC=${CMAKE_C_COMPILER} ${msgpack_PREFIX}/src/msgpack/configure --prefix=${msgpack_PREFIX} --enable-shared=no
     BUILD_COMMAND $(MAKE)
     INSTALL_COMMAND $(MAKE) install
