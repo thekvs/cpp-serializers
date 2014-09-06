@@ -32,13 +32,6 @@ include_directories(${cpp_serializers_SOURCE_DIR})
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -W")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -W")
 
-if (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
-    set(MAKE_PROGRAM "gmake")
-    set(BOOST_ROOT "/usr/local")
-else()
-    set(MAKE_PROGRAM "make")
-endif()
-
 find_package(ZLIB)
 if (NOT ZLIB_FOUND)
     message(FATAL_ERROR "Couldn't find zlib library")
@@ -69,8 +62,8 @@ ExternalProject_Add(
     URL "http://www.eu.apache.org/dist/thrift/0.9.1/thrift-0.9.1.tar.gz"
     URL_MD5 "d2e46148f6e800a9492dbd848c66ab6e"
     CONFIGURE_COMMAND CXX=${CMAKE_CXX_COMPILER} CC=${CMAKE_C_COMPILER} ${thrift_PREFIX}/src/thrift/configure --prefix=${thrift_PREFIX} --with-boost=${Boost_INCLUDE_DIRS} --enable-shared=no --with-libevent=no --with-c_glib=no --with-java=no --with-erlang=no --with-python=no --with-perl=no --with-php=no --with-php_extension=no --with-ruby=no --with-haskell=no --with-go=no --with-d=no
-    BUILD_COMMAND ${MAKE_PROGRAM}
-    INSTALL_COMMAND ${MAKE_PROGRAM} install
+    BUILD_COMMAND $(MAKE)
+    INSTALL_COMMAND $(MAKE) install
     BUILD_IN_SOURCE 1
 )
 include_directories(${thrift_PREFIX}/include)
@@ -84,8 +77,8 @@ ExternalProject_Add(
     URL "https://github.com/msgpack/msgpack-c/releases/download/cpp-0.5.8/msgpack-0.5.8.tar.gz"
     URL_MD5 "ea0bee0939d2980c0df91f0e4843ccc4"
     CONFIGURE_COMMAND CXX=${CMAKE_CXX_COMPILER} CC=${CMAKE_C_COMPILER} ${msgpack_PREFIX}/src/msgpack/configure --prefix=${msgpack_PREFIX} --enable-shared=no
-    BUILD_COMMAND ${MAKE_PROGRAM}
-    INSTALL_COMMAND ${MAKE_PROGRAM} install
+    BUILD_COMMAND $(MAKE)
+    INSTALL_COMMAND $(MAKE) install
     BUILD_IN_SOURCE 1
 )
 include_directories(${msgpack_PREFIX}/include)
@@ -98,8 +91,8 @@ ExternalProject_Add(
     URL "http://protobuf.googlecode.com/files/protobuf-2.5.0.tar.gz"
     URL_MD5 "b751f772bdeb2812a2a8e7202bf1dae8"
     CONFIGURE_COMMAND CXX=${CMAKE_CXX_COMPILER} CC=${CMAKE_C_COMPILER} ${protobuf_PREFIX}/src/protobuf/configure --prefix=${protobuf_PREFIX} --enable-shared=no
-    BUILD_COMMAND ${MAKE_PROGRAM}
-    INSTALL_COMMAND ${MAKE_PROGRAM} install
+    BUILD_COMMAND $(MAKE)
+    INSTALL_COMMAND $(MAKE) install
     BUILD_IN_SOURCE 1
 )
 include_directories(${protobuf_PREFIX}/include)
@@ -128,7 +121,7 @@ ExternalProject_Add(
     CONFIGURE_COMMAND cmake -DBOOST_INCLUDEDIR=${boost_PREFIX}/include -DBOOST_LIBRARYDIR=${boost_PREFIX}/lib -DBoost_NO_SYSTEM_PATHS=ON -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX=${avro_PREFIX} -DBUILD_SHARED_LIBS=OFF ${avro_PREFIX}/src/avro/lang/c++/
     # Due to some issues with using statically built boost libraries AND zlib in avro tests
     # build only necessary parts and install them in a very hackish way.
-    BUILD_COMMAND make avrocpp_s avrogencpp
+    BUILD_COMMAND $(MAKE) avrocpp_s avrogencpp
     INSTALL_COMMAND mkdir -p ${avro_PREFIX}/include/avro ${avro_PREFIX}/lib ${avro_PREFIX}/bin && cp ${avro_PREFIX}/src/avro-build/avrogencpp ${avro_PREFIX}/bin && cp ${avro_PREFIX}/src/avro-build/libavrocpp_s.a ${avro_PREFIX}/lib && cd ${avro_PREFIX}/src/avro/lang/c++/api/ && cp -r . ${avro_PREFIX}/include/avro/
 )
 include_directories(${avro_PREFIX}/include)
