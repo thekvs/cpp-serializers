@@ -35,7 +35,7 @@ on a typical desktop computer with Intel Core i5 processor running Ubuntu 14.04.
 * thrift 0.9.1
 * protobuf 2.5.0
 * boost 1.56.0
-* msgpack 0.5.8
+* msgpack 0.5.9
 * cereal 1.0.0
 * avro 1.7.7
 
