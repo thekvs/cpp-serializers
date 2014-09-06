@@ -17,8 +17,8 @@
  */
 
 
-#ifndef _HOME_KVS_WORK_DEVEL_CPP_SERIALIZERS_AVRO_RECORD_HPP_4146017327__H_
-#define _HOME_KVS_WORK_DEVEL_CPP_SERIALIZERS_AVRO_RECORD_HPP_4146017327__H_
+#ifndef _HOME_KVS_WORK_DEVEL_CPP_SERIALIZERS_AVRO_RECORD_HPP_2963358620__H_
+#define _HOME_KVS_WORK_DEVEL_CPP_SERIALIZERS_AVRO_RECORD_HPP_2963358620__H_
 
 
 #include <sstream>
@@ -45,8 +45,26 @@ template<> struct codec_traits<avro_test::Record> {
         avro::encode(e, v.strings);
     }
     static void decode(Decoder& d, avro_test::Record& v) {
-        avro::decode(d, v.ids);
-        avro::decode(d, v.strings);
+        if (avro::ResolvingDecoder *rd =
+            dynamic_cast<avro::ResolvingDecoder *>(&d)) {
+            const std::vector<size_t> fo = rd->fieldOrder();
+            for (std::vector<size_t>::const_iterator it = fo.begin();
+                it != fo.end(); ++it) {
+                switch (*it) {
+                case 0:
+                    avro::decode(d, v.ids);
+                    break;
+                case 1:
+                    avro::decode(d, v.strings);
+                    break;
+                default:
+                    break;
+                }
+            }
+        } else {
+            avro::decode(d, v.ids);
+            avro::decode(d, v.strings);
+        }
     }
 };
 
