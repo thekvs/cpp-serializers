@@ -32,10 +32,10 @@ $ ./test 100000 protobuf cereal
 Following results were obtained running 1000000 serialize-deserialize operations 50 times and then averaging results
 on a typical desktop computer with Intel Core i5 processor running Ubuntu 14.04. Exact versions of libraries used are:
 
-* boost 1.55.0
 * thrift 0.9.1
-* msgpack 0.5.8
 * protobuf 2.5.0
+* boost 1.56.0
+* msgpack 0.5.8
 * cereal 1.0.0
 * avro 1.7.7
 
