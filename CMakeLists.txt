@@ -123,8 +123,8 @@ ExternalProject_Add(
     avro
     DEPENDS boost
     PREFIX ${avro_PREFIX}
-    URL "http://www.eu.apache.org/dist/avro/avro-1.7.6/avro-src-1.7.6.tar.gz"
-    URL_MD5 "adcbd74cb21f7ff1fe6ac1636212e43b"
+    URL "http://www.eu.apache.org/dist/avro/avro-1.7.7/avro-src-1.7.7.tar.gz"
+    URL_MD5 "352d8ee65f1ce1b43599be16eca7f264"
     CONFIGURE_COMMAND cmake -DBOOST_INCLUDEDIR=${boost_PREFIX}/include -DBOOST_LIBRARYDIR=${boost_PREFIX}/lib -DBoost_NO_SYSTEM_PATHS=ON -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX=${avro_PREFIX} -DBUILD_SHARED_LIBS=OFF ${avro_PREFIX}/src/avro/lang/c++/
     # Due to some issues with using statically built boost libraries AND zlib in avro tests
     # build only necessary parts and install them in a very hackish way.
