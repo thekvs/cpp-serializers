@@ -18,6 +18,8 @@
 #include <boost/serialization/export.hpp>
 #include <boost/serialization/tracking.hpp>
 
+#include <boost/version.hpp>
+
 namespace boost_test {
 
 typedef std::vector<int64_t>     Integers;

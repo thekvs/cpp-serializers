@@ -90,6 +90,7 @@ thrift_serialization_test(size_t iterations, ThriftSerializationProto proto = Th
         tag = "thrift-compact:";
     }
 
+    std::cout << tag << " version = " << VERSION << std::endl;
     std::cout << tag << " size = " << serialized.size() << " bytes" << std::endl;
 
     auto start = std::chrono::high_resolution_clock::now();
@@ -143,6 +144,7 @@ protobuf_serialization_test(size_t iterations)
         throw std::logic_error("protobuf's case: deserialization failed");
     }
 
+    std::cout << "protobuf: version = " << GOOGLE_PROTOBUF_VERSION << std::endl;
     std::cout << "protobuf: size = " << serialized.size() << " bytes" << std::endl;
 
     auto start = std::chrono::high_resolution_clock::now();
@@ -181,6 +183,7 @@ boost_serialization_test(size_t iterations)
         throw std::logic_error("boost's case: deserialization failed");
     }
 
+    std::cout << "boost: version = " << BOOST_VERSION << std::endl;
     std::cout << "boost: size = " << serialized.size() << " bytes" << std::endl;
 
     auto start = std::chrono::high_resolution_clock::now();
@@ -227,6 +230,7 @@ msgpack_serialization_test(size_t iterations)
         throw std::logic_error("msgpack's case: deserialization failed");   
     }
 
+    std::cout << "msgpack: version = " << msgpack_version() << std::endl;
     std::cout << "msgpack: size = " << serialized.size() << " bytes" << std::endl;
 
     auto start = std::chrono::high_resolution_clock::now();
