@@ -41,13 +41,13 @@ on a typical desktop computer with Intel Core i5 processor running Ubuntu 14.04.
 
 | serializer     | object's size | avg. total time |
 | -------------- | ------------- | --------------- |
-| thrift-binary  | 17017         | 24490           |
-| thrift-compact | 11597         | 29760           |
-| protobuf       | 12571         | 21110           |
-| boost          | 17470         | 22700           |
-| msgpack        | 11902         | 18470           |
-| cereal         | 17416         | 10770           |
-| avro           | 12288         | 33210           |
+| thrift-binary  | 17017         | 24681           |
+| thrift-compact | 11597         | 29455           |
+| protobuf       | 12571         | 21034           |
+| boost          | 17470         | 22945           |
+| msgpack        | 11902         | 23560           |
+| cereal         | 17416         | 10688           |
+| avro           | 12288         | 31750           |
 
 Size mesuared in bytes, time mesuared in milliseconds.
 
