@@ -99,6 +99,22 @@ include_directories(${protobuf_PREFIX}/include)
 set(PROTOBUF_LIBRARIES ${protobuf_PREFIX}/lib/libprotobuf.a)
 set(PROTOBUF_GENERATOR ${protobuf_PREFIX}/bin/protoc)
 
+set(capnproto_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/capnproto)
+ExternalProject_Add(
+    capnproto
+    PREFIX ${capnproto_PREFIX}
+    URL "https://capnproto.org/capnproto-c++-0.5.2.tar.gz"
+    URL_MD5 "84dcb55dba3f60b0f85734fd0e502401"
+    CONFIGURE_COMMAND CXX=${CMAKE_CXX_COMPILER} CC=${CMAKE_C_COMPILER} ${capnproto_PREFIX}/src/capnproto/configure --prefix=${capnproto_PREFIX} --enable-shared=no
+    BUILD_COMMAND $(MAKE)
+    INSTALL_COMMAND $(MAKE) install
+    BUILD_IN_SOURCE 1
+)
+include_directories(${capnproto_PREFIX}/include)
+set(CAPNPROTO_LIBRARIES ${capnproto_PREFIX}/lib/libcapnp.a ${capnproto_PREFIX}/lib/libkj.a)
+set(CAPNPROTO_GENERATOR ${capnproto_PREFIX}/bin/capnp)
+set(CAPNPROTO_CPP_GENERATOR ${capnproto_PREFIX}/bin/capnpc-c++)
+
 set(cereal_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/cereal)
 ExternalProject_Add(
     cereal
@@ -131,6 +147,7 @@ set(AVRO_GENERATOR ${avro_PREFIX}/bin/avrogencpp)
 set(LINKLIBS    ${THRIFT_LIBRARIES}
                 ${MSGPACK_LIBRARIES}
                 ${PROTOBUF_LIBRARIES}
+                ${CAPNPROTO_LIBRARIES}
                 ${BOOST_LIBRARIES}
                 ${AVRO_LIBRARIES}
                 ${CMAKE_THREAD_LIBS_INIT}
@@ -171,6 +188,20 @@ set_source_files_properties(
 set(PROTOBUF_SERIALIZATION_SOURCES  ${cpp_serializers_SOURCE_DIR}/protobuf/test.pb.cc)
 
 add_custom_command(
+    DEPENDS ${cpp_serializers_SOURCE_DIR}/test.capnp
+    COMMAND ${CAPNPROTO_GENERATOR}
+    ARGS compile -I${cpp_serializers_SOURCE_DIR} --src-prefix=${cpp_serializers_SOURCE_DIR} -o${CAPNPROTO_CPP_GENERATOR}:${cpp_serializers_SOURCE_DIR}/capnproto ${cpp_serializers_SOURCE_DIR}/test.capnp
+    OUTPUT  "${cpp_serializers_SOURCE_DIR}/capnproto/test.capnp.c++"
+    COMMENT "Executing Cap'n Proto compiler"
+)
+set_source_files_properties(
+    ${cpp_serializers_SOURCE_DIR}/capnproto/test.capnp.c++
+    ${cpp_serializers_SOURCE_DIR}/capnproto/test.capnp.h
+    PROPERTIES GENERATED TRUE
+)
+set(CAPNPROTO_SERIALIZATION_SOURCES  ${cpp_serializers_SOURCE_DIR}/capnproto/test.capnp.c++)
+
+add_custom_command(
     DEPENDS ${cpp_serializers_SOURCE_DIR}/test.json
     COMMAND ${AVRO_GENERATOR}
     ARGS --input ${cpp_serializers_SOURCE_DIR}/test.json --output ${cpp_serializers_SOURCE_DIR}/avro/record.hpp --namespace avro_test
@@ -189,10 +220,11 @@ set(CEREAL_SERIALIZATION_SOURCES ${cpp_serializers_SOURCE_DIR}/cereal/record.cpp
 add_executable(test ${cpp_serializers_SOURCE_DIR}/test.cpp
                     ${THRIFT_SERIALIZATION_SOURCES}
                     ${PROTOBUF_SERIALIZATION_SOURCES}
+                    ${CAPNPROTO_SERIALIZATION_SOURCES}
                     ${BOOST_SERIALIZATION_SOURCES}
                     ${CEREAL_SERIALIZATION_SOURCES}
                     ${AVRO_SERIALIZATION_SOURCES}
 )
-add_dependencies(test thrift msgpack protobuf boost cereal avro)
+add_dependencies(test thrift msgpack protobuf capnproto boost cereal avro)
 target_link_libraries(test ${LINKLIBS})
 set_target_properties(test PROPERTIES COMPILE_FLAGS "-std=c++11")
