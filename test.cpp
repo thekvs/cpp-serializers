@@ -39,17 +39,19 @@ thrift_serialization_test(size_t iterations, ThriftSerializationProto proto = Th
     using apache::thrift::transport::TMemoryBuffer;
     using apache::thrift::protocol::TBinaryProtocol;
     using apache::thrift::protocol::TCompactProtocol;
+    using apache::thrift::protocol::TBinaryProtocolT;
+    using apache::thrift::protocol::TCompactProtocolT;
 
     using namespace thrift_test;
 
     boost::shared_ptr<TMemoryBuffer> buffer1(new TMemoryBuffer());
     boost::shared_ptr<TMemoryBuffer> buffer2(new TMemoryBuffer());
 
-    TBinaryProtocol binary_protocol1(buffer1);
-    TBinaryProtocol binary_protocol2(buffer2);
+    TBinaryProtocolT<TMemoryBuffer> binary_protocol1(buffer1);
+    TBinaryProtocolT<TMemoryBuffer> binary_protocol2(buffer2);
 
-    TCompactProtocol compact_protocol1(buffer1);
-    TCompactProtocol compact_protocol2(buffer2);
+    TCompactProtocolT<TMemoryBuffer> compact_protocol1(buffer1);
+    TCompactProtocolT<TMemoryBuffer> compact_protocol2(buffer2);
 
     Record r1;
 
