@@ -39,7 +39,7 @@ thrift_serialization_test(size_t iterations, ThriftSerializationProto proto = Th
     using apache::thrift::transport::TMemoryBuffer;
     using apache::thrift::protocol::TBinaryProtocol;
     using apache::thrift::protocol::TCompactProtocol;
-    
+
     using namespace thrift_test;
 
     boost::shared_ptr<TMemoryBuffer> buffer1(new TMemoryBuffer());
@@ -180,7 +180,7 @@ capnproto_serialization_test(size_t iterations)
     for (size_t i = 0; i < kStringsCount; i++) {
         strings.set(i, kStringValue);
     }
-    
+
     kj::ArrayPtr<const kj::ArrayPtr<const capnp::word>> serialized =
         message.getSegmentsForOutput();
 
@@ -190,7 +190,7 @@ capnproto_serialization_test(size_t iterations)
     if (r2.getIds().size() != kIntegers.size()) {
         throw std::logic_error("capnproto's case: deserialization failed");
     }
-    
+
     size_t size = 0;
     for (auto segment: serialized) {
       size += segment.asBytes().size();
@@ -270,16 +270,16 @@ msgpack_serialization_test(size_t iterations)
     msgpack::pack(sbuf, r1);
 
     std::string serialized(sbuf.data(), sbuf.size());
- 
+
     msgpack::unpacked msg;
     msgpack::unpack(&msg, serialized.data(), serialized.size());
- 
+
     msgpack::object obj = msg.get();
- 
+
     obj.convert(&r2);
 
     if (r1 != r2) {
-        throw std::logic_error("msgpack's case: deserialization failed");   
+        throw std::logic_error("msgpack's case: deserialization failed");
     }
 
     std::cout << "msgpack: version = " << msgpack_version() << std::endl;
@@ -292,7 +292,7 @@ msgpack_serialization_test(size_t iterations)
         msgpack::unpacked msg;
         msgpack::unpack(&msg, sbuf.data(), sbuf.size());
         msgpack::object obj = msg.get();
-        obj.convert(&r2);                
+        obj.convert(&r2);
     }
     auto finish = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
