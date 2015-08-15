@@ -41,8 +41,8 @@ on a typical desktop computer with Intel Core i5 processor running Ubuntu 14.04.
 
 | serializer     | object's size | avg. total time |
 | -------------- | ------------- | --------------- |
-| thrift-binary  | 17017         | 24681           |
-| thrift-compact | 11597         | 29455           |
+| thrift-binary  | 17017         | 13763           |
+| thrift-compact | 11597         | 27017           |
 | protobuf       | 12571         | 21034           |
 | boost          | 17470         | 22945           |
 | msgpack        | 11902         | 23560           |
