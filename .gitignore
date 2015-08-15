@@ -1,1 +1,3 @@
 *.sublime*
+*.swp*
+.ycm_extra_conf.*
