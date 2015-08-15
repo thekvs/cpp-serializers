@@ -11,6 +11,8 @@ include(CheckIncludeFile)
 include(CheckCXXCompilerFlag)
 include(ExternalProject)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 CHECK_CXX_COMPILER_FLAG("-std=c++11" CXX11)
 if (NOT CXX11)
     message(FATAL_ERROR "C++ compiler doesn't support C++11")
