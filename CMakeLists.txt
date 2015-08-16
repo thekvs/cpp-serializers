@@ -50,6 +50,10 @@ ExternalProject_Add(
     BUILD_COMMAND ./bjam link=static cxxflags='-fPIC'
     INSTALL_COMMAND ./bjam link=static install
     BUILD_IN_SOURCE 1
+    LOG_UPDATE ON
+    LOG_CONFIGURE ON
+    LOG_BUILD ON
+    LOG_INSTALL ON
 )
 set(Boost_INCLUDE_DIRS ${boost_PREFIX})
 set(BOOST_LIBRARIES ${boost_PREFIX}/lib/libboost_serialization.a)
@@ -67,6 +71,9 @@ ExternalProject_Add(
     BUILD_COMMAND $(MAKE)
     INSTALL_COMMAND $(MAKE) install
     BUILD_IN_SOURCE 1
+    LOG_UPDATE ON
+    LOG_BUILD ON
+    LOG_INSTALL ON
 )
 include_directories(${thrift_PREFIX}/include)
 set(THRIFT_LIBRARIES ${thrift_PREFIX}/lib/libthrift.a)
@@ -82,6 +89,9 @@ ExternalProject_Add(
     BUILD_COMMAND $(MAKE)
     INSTALL_COMMAND $(MAKE) install
     BUILD_IN_SOURCE 1
+    LOG_UPDATE ON
+    LOG_BUILD ON
+    LOG_INSTALL ON
 )
 include_directories(${msgpack_PREFIX}/include)
 set(MSGPACK_LIBRARIES ${msgpack_PREFIX}/lib/libmsgpack.a)
@@ -96,6 +106,9 @@ ExternalProject_Add(
     BUILD_COMMAND $(MAKE)
     INSTALL_COMMAND $(MAKE) install
     BUILD_IN_SOURCE 1
+    LOG_UPDATE ON
+    LOG_BUILD ON
+    LOG_INSTALL ON
 )
 include_directories(${protobuf_PREFIX}/include)
 set(PROTOBUF_LIBRARIES ${protobuf_PREFIX}/lib/libprotobuf.a)
@@ -111,6 +124,9 @@ ExternalProject_Add(
     BUILD_COMMAND $(MAKE)
     INSTALL_COMMAND $(MAKE) install
     BUILD_IN_SOURCE 1
+    LOG_UPDATE ON
+    LOG_BUILD ON
+    LOG_INSTALL ON
 )
 include_directories(${capnproto_PREFIX}/include)
 set(CAPNPROTO_LIBRARIES ${capnproto_PREFIX}/lib/libcapnp.a ${capnproto_PREFIX}/lib/libkj.a)
@@ -141,6 +157,9 @@ ExternalProject_Add(
     # build only necessary parts and install them in a very hackish way.
     BUILD_COMMAND $(MAKE) avrocpp_s avrogencpp
     INSTALL_COMMAND mkdir -p ${avro_PREFIX}/include/avro ${avro_PREFIX}/lib ${avro_PREFIX}/bin && cp ${avro_PREFIX}/src/avro-build/avrogencpp ${avro_PREFIX}/bin && cp ${avro_PREFIX}/src/avro-build/libavrocpp_s.a ${avro_PREFIX}/lib && cd ${avro_PREFIX}/src/avro/lang/c++/api/ && cp -r . ${avro_PREFIX}/include/avro/
+    LOG_UPDATE ON
+    LOG_CONFIGURE ON
+    LOG_BUILD ON
 )
 include_directories(${avro_PREFIX}/include)
 set(AVRO_LIBRARIES ${avro_PREFIX}/lib/libavrocpp_s.a)
