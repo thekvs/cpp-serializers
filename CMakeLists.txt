@@ -137,8 +137,8 @@ set(cereal_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/cereal)
 ExternalProject_Add(
     cereal
     PREFIX ${cereal_PREFIX}
-    URL "https://github.com/USCiLab/cereal/archive/v1.0.0.tar.gz"
-    URL_MD5 "d1bacca70a95cec0ddbff68b0871296b"
+    URL "https://github.com/USCiLab/cereal/archive/v1.1.2.tar.gz"
+    URL_MD5 "34d4ad174acbff005c36d4d10e48cbb9"
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND mkdir -p ${cereal_PREFIX}/include/ && cp -r ${cereal_PREFIX}/src/cereal/include/cereal ${cereal_PREFIX}/include/

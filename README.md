@@ -36,7 +36,7 @@ on a typical desktop computer with Intel Core i5 processor running Ubuntu 14.04.
 * protobuf 2.6.0
 * boost 1.56.0
 * msgpack 0.5.9
-* cereal 1.0.0
+* cereal 1.1.2
 * avro 1.7.7
 
 | serializer     | object's size | avg. total time |
