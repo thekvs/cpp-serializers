@@ -16,15 +16,15 @@ $ make
 #### Usage
 * Test __all__ serializers, run each serializer 100000 times:
 ```
-$ ./test 100000
+$ ./benchmark 100000
 ```
 * Test only __protobuf__ serializer, run it 100000 times:
 ```
-$ ./test 100000 protobuf
+$ ./benchmark 100000 protobuf
 ```
 * Test __protobuf__ and __cereal__ serializers only, run each of them 100000 times:
 ```
-$ ./test 100000 protobuf cereal
+$ ./benchmark 100000 protobuf cereal
 ```
 
 #### Results

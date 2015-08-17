@@ -238,7 +238,7 @@ set(AVRO_SERIALIZATION_SOURCES ${cpp_serializers_SOURCE_DIR}/avro/record.hpp)
 set(BOOST_SERIALIZATION_SOURCES ${cpp_serializers_SOURCE_DIR}/boost/record.cpp)
 set(CEREAL_SERIALIZATION_SOURCES ${cpp_serializers_SOURCE_DIR}/cereal/record.cpp)
 
-add_executable(test ${cpp_serializers_SOURCE_DIR}/test.cpp
+add_executable(benchmark ${cpp_serializers_SOURCE_DIR}/test.cpp
                     ${THRIFT_SERIALIZATION_SOURCES}
                     ${PROTOBUF_SERIALIZATION_SOURCES}
                     ${CAPNPROTO_SERIALIZATION_SOURCES}
@@ -246,6 +246,6 @@ add_executable(test ${cpp_serializers_SOURCE_DIR}/test.cpp
                     ${CEREAL_SERIALIZATION_SOURCES}
                     ${AVRO_SERIALIZATION_SOURCES}
 )
-add_dependencies(test thrift msgpack protobuf capnproto boost cereal avro)
-target_link_libraries(test ${LINKLIBS})
-set_target_properties(test PROPERTIES COMPILE_FLAGS "-std=c++11")
+add_dependencies(benchmark thrift msgpack protobuf capnproto boost cereal avro)
+target_link_libraries(benchmark ${LINKLIBS})
+set_target_properties(benchmark PROPERTIES COMPILE_FLAGS "-std=c++11")
