@@ -44,8 +44,8 @@ set(boost_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/boost)
 ExternalProject_Add(
     boost
     PREFIX ${boost_PREFIX}
-    URL "http://netcologne.dl.sourceforge.net/project/boost/boost/1.56.0/boost_1_56_0.tar.gz"
-    URL_MD5 "8c54705c424513fa2be0042696a3a162"
+    URL "http://netcologne.dl.sourceforge.net/project/boost/boost/1.59.0/boost_1_59_0.tar.gz"
+    URL_MD5 "51528a0e3b33d9e10aaa311d9eb451e3"
     CONFIGURE_COMMAND ${boost_PREFIX}/src/boost/bootstrap.sh --with-libraries=serialization,filesystem,system,program_options,iostreams --prefix=${boost_PREFIX}
     BUILD_COMMAND ./bjam link=static cxxflags='-fPIC'
     INSTALL_COMMAND ./bjam link=static install
