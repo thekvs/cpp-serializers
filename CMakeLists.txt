@@ -40,6 +40,13 @@ if (NOT ZLIB_FOUND)
 endif()
 include_directories(${ZLIB_INCLUDE_DIRS})
 
+find_program(AUTORECONF NAMES autoreconf)
+if (NOT AUTORECONF)
+    message(FATAL_ERROR "Autoreconf not found")
+else()
+    message(STATUS "Found autoreconf: ${AUTORECONF}")
+endif()
+
 set(boost_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/boost)
 ExternalProject_Add(
     boost
@@ -120,7 +127,7 @@ ExternalProject_Add(
     PREFIX ${capnproto_PREFIX}
     URL "https://github.com/sandstorm-io/capnproto/archive/v0.5.2.tar.gz"
     URL_MD5 "99a0e06a2a2d8a937c222eb13a0c01ee"
-    CONFIGURE_COMMAND CXX=${CMAKE_CXX_COMPILER} CC=${CMAKE_C_COMPILER} cd ${capnproto_PREFIX}/src/capnproto/c++ && autoreconf -i && cd - && ${capnproto_PREFIX}/src/capnproto/c++/configure --prefix=${capnproto_PREFIX} --libdir=${capnproto_PREFIX}/lib --enable-shared=no
+    CONFIGURE_COMMAND CXX=${CMAKE_CXX_COMPILER} CC=${CMAKE_C_COMPILER} cd ${capnproto_PREFIX}/src/capnproto/c++ && ${AUTORECONF} -i && cd - && ${capnproto_PREFIX}/src/capnproto/c++/configure --prefix=${capnproto_PREFIX} --libdir=${capnproto_PREFIX}/lib --enable-shared=no
     BUILD_COMMAND $(MAKE)
     INSTALL_COMMAND $(MAKE) install
     BUILD_IN_SOURCE 1
