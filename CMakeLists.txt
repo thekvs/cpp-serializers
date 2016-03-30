@@ -47,6 +47,13 @@ else()
     message(STATUS "Found autoreconf: ${AUTORECONF}")
 endif()
 
+find_program(LIBTOOL NAMES libtool)
+if (NOT LIBTOOL)
+    message(FATAL_ERROR "Libtool not found")
+else()
+    message(STATUS "Found libtool: ${LIBTOOL}")
+endif()
+
 set(boost_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/boost)
 ExternalProject_Add(
     boost
