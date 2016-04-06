@@ -179,12 +179,28 @@ include_directories(${avro_PREFIX}/include)
 set(AVRO_LIBRARIES ${avro_PREFIX}/lib/libavrocpp_s.a)
 set(AVRO_GENERATOR ${avro_PREFIX}/bin/avrogencpp)
 
+set(flatbuffers_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/flatbuffers)
+ExternalProject_Add(
+    flatbuffers
+    PREFIX ${flatbuffers_PREFIX}
+    URL "https://github.com/google/flatbuffers/archive/v1.3.0.tar.gz"
+    URL_MD5 "86d13e8c4c19c2bbadff86c5435b2fca"
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${flatbuffers_PREFIX} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+    LOG_UPDATE ON
+    LOG_CONFIGURE ON
+    LOG_BUILD ON
+)
+include_directories(${flatbuffers_PREFIX}/include)
+set(FLATBUFFERS_LIBRARIES ${flatbuffers_PREFIX}/lib/libflatbuffers.a)
+set(FLATBUFFERS_GENERATOR ${flatbuffers_PREFIX}/bin/flatc)
+
 set(LINKLIBS    ${THRIFT_LIBRARIES}
                 ${MSGPACK_LIBRARIES}
                 ${PROTOBUF_LIBRARIES}
                 ${CAPNPROTO_LIBRARIES}
                 ${BOOST_LIBRARIES}
                 ${AVRO_LIBRARIES}
+                ${FLATBUFFERS_LIBRARIES}
                 ${CMAKE_THREAD_LIBS_INIT}
                 ${ZLIB_LIBRARIES}
 )
@@ -249,6 +265,19 @@ set_source_files_properties(
 )
 set(AVRO_SERIALIZATION_SOURCES ${cpp_serializers_SOURCE_DIR}/avro/record.hpp)
 
+add_custom_command(
+    DEPENDS ${cpp_serializers_SOURCE_DIR}/test.fbs
+    COMMAND ${FLATBUFFERS_GENERATOR}
+    ARGS --cpp -o ${cpp_serializers_SOURCE_DIR}/flatbuffers ${cpp_serializers_SOURCE_DIR}/test.fbs
+    OUTPUT "${cpp_serializers_SOURCE_DIR}/flatbuffers/test_generated.h"
+    COMMENT "Executing FlatBuffers compiler"
+)
+set_source_files_properties(
+    ${cpp_serializers_SOURCE_DIR}/flatbuffers/test_generated.h
+    PROPERTIES GENERATED TRUE
+)
+set(FLATBUFFERS_SERIALIZATION_SOURCES ${cpp_serializers_SOURCE_DIR}/flatbuffers/test_generated.h)
+
 set(BOOST_SERIALIZATION_SOURCES ${cpp_serializers_SOURCE_DIR}/boost/record.cpp)
 set(CEREAL_SERIALIZATION_SOURCES ${cpp_serializers_SOURCE_DIR}/cereal/record.cpp)
 
@@ -259,7 +288,8 @@ add_executable(benchmark ${cpp_serializers_SOURCE_DIR}/test.cpp
                     ${BOOST_SERIALIZATION_SOURCES}
                     ${CEREAL_SERIALIZATION_SOURCES}
                     ${AVRO_SERIALIZATION_SOURCES}
+                    ${FLATBUFFERS_SERIALIZATION_SOURCES}
 )
-add_dependencies(benchmark thrift msgpack protobuf capnproto boost cereal avro)
+add_dependencies(benchmark thrift msgpack protobuf capnproto boost cereal avro flatbuffers)
 target_link_libraries(benchmark ${LINKLIBS})
 set_target_properties(benchmark PROPERTIES COMPILE_FLAGS "-std=c++11")

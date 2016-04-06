@@ -1,4 +1,15 @@
-#### [Thrift](http://thrift.apache.org/) vs. [Protobuf](https://code.google.com/p/protobuf/) vs. [Boost.Serialization](http://www.boost.org/libs/serialization) vs. [Msgpack](http://msgpack.org/) vs. [Cereal](http://uscilab.github.io/cereal/index.html) vs. [Avro](http://avro.apache.org/) serialization/deserialization time test for C++.
+#### About
+
+Compare various data serialization libraries for C++.
+
+* [Thrift](http://thrift.apache.org/)
+* [Protobuf](https://code.google.com/p/protobuf/)
+* [Boost.Serialization](http://www.boost.org/libs/serialization)
+* [Msgpack](http://msgpack.org/)
+* [Cereal](http://uscilab.github.io/cereal/index.html)
+* [Avro](http://avro.apache.org/)
+* [Capnproto](https://capnproto.org/)
+* [Flatbuffers](https://google.github.io/flatbuffers/)
 
 #### Build
 This project does not have any external library dependencies. All (boost, thrift etc.) needed libraries are downloaded
@@ -38,6 +49,8 @@ on a typical desktop computer with Intel Core i5 processor running Ubuntu 14.04.
 * msgpack 0.5.9
 * cereal 1.1.2
 * avro 1.7.7
+* capnproto 0.5.2
+* flatbuffers 1.3.0
 
 | serializer     | object's size | avg. total time |
 | -------------- | ------------- | --------------- |
@@ -49,10 +62,6 @@ on a typical desktop computer with Intel Core i5 processor running Ubuntu 14.04.
 | cereal         | 17416         | 10688           |
 | avro           | 12288         | 31750           |
 
-Size mesuared in bytes, time mesuared in milliseconds.
-
-##### Graphical representations
-
 ###### Size
 
 ![Size](images/size.png)
@@ -60,3 +69,17 @@ Size mesuared in bytes, time mesuared in milliseconds.
 ###### Time
 
 ![Time](images/time.png)
+
+For capnproto and flatbuffers since they already store data in a "serialized" form and serialization basically means getting pointer
+to internal storage, we measure full build/serialize/deserialze cycle. On all the other libraries we measured serialize/deserialze
+cycle of already build data structure.
+
+| serializer     | object's size | avg. total time |
+| -------------- | ------------- | --------------- |
+| capnproto      | 17768         | 4396            |
+| flatbuffers    | 17632         | 12494           |
+
+![Time](images/time2.png)
+
+Size mesuared in bytes, time mesuared in milliseconds.
+

@@ -1,0 +1,8 @@
+namespace flatbuffers_test;
+
+table Record {
+	ids:[long];
+	strings:[string];
+}
+
+root_type Record;
