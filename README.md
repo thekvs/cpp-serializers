@@ -72,7 +72,7 @@ on a typical desktop computer with Intel Core i5 processor running Ubuntu 14.04.
 
 For capnproto and flatbuffers since they already store data in a "serialized" form and serialization basically means getting pointer
 to internal storage, we measure full build/serialize/deserialze cycle. On all the other libraries we measured serialize/deserialze
-cycle of already build data structure.
+cycle of already built data structure.
 
 | serializer     | object's size | avg. total time |
 | -------------- | ------------- | --------------- |
