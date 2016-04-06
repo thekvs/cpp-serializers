@@ -71,8 +71,8 @@ on a typical desktop computer with Intel Core i5 processor running Ubuntu 14.04.
 ![Time](images/time.png)
 
 For capnproto and flatbuffers since they already store data in a "serialized" form and serialization basically means getting pointer
-to the internal storage, we measure full __build__/serialize/deserialze cycle. On all other libraries we measure serialize/deserialze
-cycle of already built data structure.
+to the internal storage, we measure full __build__/serialize/deserialze cycle. In the case of other libraries we measure
+serialize/deserialze cycle of the already built data structure.
 
 | serializer     | object's size | avg. total time |
 | -------------- | ------------- | --------------- |
