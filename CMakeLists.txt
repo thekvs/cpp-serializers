@@ -194,15 +194,16 @@ include_directories(${flatbuffers_PREFIX}/include)
 set(FLATBUFFERS_LIBRARIES ${flatbuffers_PREFIX}/lib/libflatbuffers.a)
 set(FLATBUFFERS_GENERATOR ${flatbuffers_PREFIX}/bin/flatc)
 
-set(LINKLIBS    ${THRIFT_LIBRARIES}
-                ${MSGPACK_LIBRARIES}
-                ${PROTOBUF_LIBRARIES}
-                ${CAPNPROTO_LIBRARIES}
-                ${BOOST_LIBRARIES}
-                ${AVRO_LIBRARIES}
-                ${FLATBUFFERS_LIBRARIES}
-                ${CMAKE_THREAD_LIBS_INIT}
-                ${ZLIB_LIBRARIES}
+set(LINKLIBS
+    ${THRIFT_LIBRARIES}
+    ${MSGPACK_LIBRARIES}
+    ${PROTOBUF_LIBRARIES}
+    ${CAPNPROTO_LIBRARIES}
+    ${BOOST_LIBRARIES}
+    ${AVRO_LIBRARIES}
+    ${FLATBUFFERS_LIBRARIES}
+    ${CMAKE_THREAD_LIBS_INIT}
+    ${ZLIB_LIBRARIES}
 )
 
 add_custom_command(
@@ -281,14 +282,16 @@ set(FLATBUFFERS_SERIALIZATION_SOURCES ${cpp_serializers_SOURCE_DIR}/flatbuffers/
 set(BOOST_SERIALIZATION_SOURCES ${cpp_serializers_SOURCE_DIR}/boost/record.cpp)
 set(CEREAL_SERIALIZATION_SOURCES ${cpp_serializers_SOURCE_DIR}/cereal/record.cpp)
 
-add_executable(benchmark ${cpp_serializers_SOURCE_DIR}/test.cpp
-                    ${THRIFT_SERIALIZATION_SOURCES}
-                    ${PROTOBUF_SERIALIZATION_SOURCES}
-                    ${CAPNPROTO_SERIALIZATION_SOURCES}
-                    ${BOOST_SERIALIZATION_SOURCES}
-                    ${CEREAL_SERIALIZATION_SOURCES}
-                    ${AVRO_SERIALIZATION_SOURCES}
-                    ${FLATBUFFERS_SERIALIZATION_SOURCES}
+add_executable(
+    benchmark
+    ${cpp_serializers_SOURCE_DIR}/benchmark.cpp
+    ${THRIFT_SERIALIZATION_SOURCES}
+    ${PROTOBUF_SERIALIZATION_SOURCES}
+    ${CAPNPROTO_SERIALIZATION_SOURCES}
+    ${BOOST_SERIALIZATION_SOURCES}
+    ${CEREAL_SERIALIZATION_SOURCES}
+    ${AVRO_SERIALIZATION_SOURCES}
+    ${FLATBUFFERS_SERIALIZATION_SOURCES}
 )
 add_dependencies(benchmark thrift msgpack protobuf capnproto boost cereal avro flatbuffers)
 target_link_libraries(benchmark ${LINKLIBS})
