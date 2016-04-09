@@ -47,7 +47,7 @@ else()
     message(STATUS "Found autoreconf: ${AUTORECONF}")
 endif()
 
-find_program(LIBTOOL NAMES libtool)
+find_program(LIBTOOL NAMES libtool libtoolize)
 if (NOT LIBTOOL)
     message(FATAL_ERROR "Libtool not found")
 else()
