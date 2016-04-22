@@ -7,7 +7,7 @@ endif()
 
 include(FindThreads)
 include(CheckTypeSize)
-include(CheckIncludeFile)
+include(CheckIncludeFiles)
 include(CheckCXXCompilerFlag)
 include(ExternalProject)
 
