@@ -58,8 +58,8 @@ set(boost_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/boost)
 ExternalProject_Add(
     boost
     PREFIX ${boost_PREFIX}
-    URL "http://netcologne.dl.sourceforge.net/project/boost/boost/1.59.0/boost_1_59_0.tar.gz"
-    URL_MD5 "51528a0e3b33d9e10aaa311d9eb451e3"
+    URL "http://netcologne.dl.sourceforge.net/project/boost/boost/1.62.0/boost_1_62_0.tar.gz"
+    URL_MD5 "6f4571e7c5a66ccc3323da6c24be8f05"
     CONFIGURE_COMMAND ${boost_PREFIX}/src/boost/bootstrap.sh --with-libraries=serialization,filesystem,system,program_options,iostreams --prefix=${boost_PREFIX}
     BUILD_COMMAND ./bjam link=static cxxflags='-fPIC'
     INSTALL_COMMAND ./bjam link=static install
@@ -79,8 +79,8 @@ ExternalProject_Add(
     thrift
     PREFIX ${thrift_PREFIX}
     DEPENDS boost
-    URL "http://www.eu.apache.org/dist/thrift/0.9.2/thrift-0.9.2.tar.gz"
-    URL_MD5 "89f63cc4d0100912f4a1f8a9dee63678"
+    URL "http://www.eu.apache.org/dist/thrift/0.9.3/thrift-0.9.3.tar.gz"
+    URL_MD5 "88d667a8ae870d5adeca8cb7d6795442"
     CONFIGURE_COMMAND CXX=${CMAKE_CXX_COMPILER} CC=${CMAKE_C_COMPILER} ${thrift_PREFIX}/src/thrift/configure --prefix=${thrift_PREFIX} --libdir=${thrift_PREFIX}/lib --with-boost=${Boost_INCLUDE_DIRS} --enable-shared=no --with-libevent=no --with-c_glib=no --with-java=no --with-erlang=no --with-python=no --with-perl=no --with-php=no --with-php_extension=no --with-ruby=no --with-haskell=no --with-go=no --with-d=no --with-lua=no --with-qt4=no --with-nodejs=no --disable-tests
     BUILD_COMMAND $(MAKE)
     INSTALL_COMMAND $(MAKE) install
@@ -97,25 +97,25 @@ set(msgpack_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/msgpack)
 ExternalProject_Add(
     msgpack
     PREFIX ${msgpack_PREFIX}
-    URL "https://github.com/msgpack/msgpack-c/releases/download/cpp-1.1.0/msgpack-1.1.0.tar.gz"
-    URL_MD5 "ac41a64d6415fd184215825048bc4523"
-    CONFIGURE_COMMAND CXX=${CMAKE_CXX_COMPILER} CC=${CMAKE_C_COMPILER} ${msgpack_PREFIX}/src/msgpack/configure --prefix=${msgpack_PREFIX} --libdir=${msgpack_PREFIX}/lib --enable-shared=no --disable-debug
+    URL "https://github.com/msgpack/msgpack-c/releases/download/cpp-2.0.0/msgpack-2.0.0.tar.gz"
+    URL_MD5 "55148cd856c72f954a6eb9cc889a7d2a"
+    CONFIGURE_COMMAND CXX=${CMAKE_CXX_COMPILER} CC=${CMAKE_C_COMPILER} cmake -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX=${msgpack_PREFIX} -DBUILD_SHARED_LIBS=OFF ${msgpack_PREFIX}/src/msgpack/
     BUILD_COMMAND $(MAKE)
-    INSTALL_COMMAND $(MAKE) install
+    INSTALL_COMMAND bash -c "mkdir -p ${msgpack_PREFIX}/include ${msgpack_PREFIX}/lib && cp ${msgpack_PREFIX}/src/msgpack/libmsgpackc.a ${msgpack_PREFIX}/lib && cp -r ${msgpack_PREFIX}/src/msgpack/include/* ${msgpack_PREFIX}/include"
     BUILD_IN_SOURCE 1
     LOG_UPDATE ON
     LOG_BUILD ON
     LOG_INSTALL ON
 )
 include_directories(${msgpack_PREFIX}/include)
-set(MSGPACK_LIBRARIES ${msgpack_PREFIX}/lib/libmsgpack.a)
+set(MSGPACK_LIBRARIES ${msgpack_PREFIX}/lib/libmsgpackc.a)
 
 set(protobuf_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/protobuf)
 ExternalProject_Add(
     protobuf
     PREFIX ${protobuf_PREFIX}
-    URL "https://github.com/google/protobuf/releases/download/v2.6.0/protobuf-2.6.0.tar.bz2"
-    URL_MD5 "78253c509a055dab316a21e754cb278a"
+    URL "https://github.com/google/protobuf/releases/download/v3.1.0/protobuf-cpp-3.1.0.tar.gz"
+    URL_MD5 "bd5e3eed635a8d32e2b99658633815ef"
     CONFIGURE_COMMAND CXX=${CMAKE_CXX_COMPILER} CC=${CMAKE_C_COMPILER} ${protobuf_PREFIX}/src/protobuf/configure --prefix=${protobuf_PREFIX} --libdir=${protobuf_PREFIX}/lib --enable-shared=no
     BUILD_COMMAND $(MAKE)
     INSTALL_COMMAND $(MAKE) install
@@ -132,8 +132,8 @@ set(capnproto_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/capnproto)
 ExternalProject_Add(
     capnproto
     PREFIX ${capnproto_PREFIX}
-    URL "https://github.com/sandstorm-io/capnproto/archive/v0.5.2.tar.gz"
-    URL_MD5 "99a0e06a2a2d8a937c222eb13a0c01ee"
+    URL "https://github.com/sandstorm-io/capnproto/archive/v0.5.3.tar.gz"
+    URL_MD5 "909bd13ad6b8bc840ac78ab8f5bcb0a4"
     CONFIGURE_COMMAND CXX=${CMAKE_CXX_COMPILER} CC=${CMAKE_C_COMPILER} cd ${capnproto_PREFIX}/src/capnproto/c++ && ${AUTORECONF} -i && cd - && ${capnproto_PREFIX}/src/capnproto/c++/configure --prefix=${capnproto_PREFIX} --libdir=${capnproto_PREFIX}/lib --enable-shared=no
     BUILD_COMMAND $(MAKE)
     INSTALL_COMMAND $(MAKE) install
@@ -151,8 +151,8 @@ set(cereal_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/cereal)
 ExternalProject_Add(
     cereal
     PREFIX ${cereal_PREFIX}
-    URL "https://github.com/USCiLab/cereal/archive/v1.1.2.tar.gz"
-    URL_MD5 "34d4ad174acbff005c36d4d10e48cbb9"
+    URL "https://github.com/USCiLab/cereal/archive/v1.2.1.tar.gz"
+    URL_MD5 "64476ed74c19068ee543b53ad3992261"
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND mkdir -p ${cereal_PREFIX}/include/ && cp -r ${cereal_PREFIX}/src/cereal/include/cereal ${cereal_PREFIX}/include/
@@ -164,8 +164,8 @@ ExternalProject_Add(
     avro
     DEPENDS boost
     PREFIX ${avro_PREFIX}
-    URL "http://www.eu.apache.org/dist/avro/avro-1.7.7/avro-src-1.7.7.tar.gz"
-    URL_MD5 "352d8ee65f1ce1b43599be16eca7f264"
+    URL "http://www.eu.apache.org/dist/avro/avro-1.8.1/avro-src-1.8.1.tar.gz"
+    URL_MD5 "bc1901bd2a83956dbb9e7f968affc607"
     CONFIGURE_COMMAND cmake -DBOOST_INCLUDEDIR=${boost_PREFIX}/include -DBOOST_LIBRARYDIR=${boost_PREFIX}/lib -DBoost_NO_SYSTEM_PATHS=ON -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX=${avro_PREFIX} -DBUILD_SHARED_LIBS=OFF ${avro_PREFIX}/src/avro/lang/c++/
     # Due to some issues with using statically built boost libraries AND zlib in avro tests
     # build only necessary parts and install them in a very hackish way.
@@ -183,8 +183,8 @@ set(flatbuffers_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/flatbuffers)
 ExternalProject_Add(
     flatbuffers
     PREFIX ${flatbuffers_PREFIX}
-    URL "https://github.com/google/flatbuffers/archive/v1.3.0.tar.gz"
-    URL_MD5 "86d13e8c4c19c2bbadff86c5435b2fca"
+    URL "https://github.com/google/flatbuffers/archive/v1.4.0.tar.gz"
+    URL_MD5 "03d5b0e6233362b0951f22374d36b553"
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${flatbuffers_PREFIX} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
     LOG_UPDATE ON
     LOG_CONFIGURE ON
