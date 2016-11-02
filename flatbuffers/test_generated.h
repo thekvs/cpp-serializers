@@ -5,7 +5,6 @@
 
 #include "flatbuffers/flatbuffers.h"
 
-
 namespace flatbuffers_test {
 
 struct Record;
@@ -42,17 +41,23 @@ struct RecordBuilder {
 };
 
 inline flatbuffers::Offset<Record> CreateRecord(flatbuffers::FlatBufferBuilder &_fbb,
-   flatbuffers::Offset<flatbuffers::Vector<int64_t>> ids = 0,
-   flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<flatbuffers::String>>> strings = 0) {
+    flatbuffers::Offset<flatbuffers::Vector<int64_t>> ids = 0,
+    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<flatbuffers::String>>> strings = 0) {
   RecordBuilder builder_(_fbb);
   builder_.add_strings(strings);
   builder_.add_ids(ids);
   return builder_.Finish();
 }
 
+inline flatbuffers::Offset<Record> CreateRecordDirect(flatbuffers::FlatBufferBuilder &_fbb,
+    const std::vector<int64_t> *ids = nullptr,
+    const std::vector<flatbuffers::Offset<flatbuffers::String>> *strings = nullptr) {
+  return CreateRecord(_fbb, ids ? _fbb.CreateVector<int64_t>(*ids) : 0, strings ? _fbb.CreateVector<flatbuffers::Offset<flatbuffers::String>>(*strings) : 0);
+}
+
 inline const flatbuffers_test::Record *GetRecord(const void *buf) { return flatbuffers::GetRoot<flatbuffers_test::Record>(buf); }
 
-inline bool VerifyRecordBuffer(flatbuffers::Verifier &verifier) { return verifier.VerifyBuffer<flatbuffers_test::Record>(); }
+inline bool VerifyRecordBuffer(flatbuffers::Verifier &verifier) { return verifier.VerifyBuffer<flatbuffers_test::Record>(nullptr); }
 
 inline void FinishRecordBuffer(flatbuffers::FlatBufferBuilder &fbb, flatbuffers::Offset<flatbuffers_test::Record> root) { fbb.Finish(root); }
 
