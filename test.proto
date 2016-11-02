@@ -1,3 +1,4 @@
+syntax = "proto3";
 package protobuf_test;
 
 message Record {
