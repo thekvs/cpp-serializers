@@ -290,12 +290,11 @@ msgpack_serialization_test(size_t iterations)
 
     std::string serialized(sbuf.data(), sbuf.size());
 
-    msgpack::unpacked msg;
-    msgpack::unpack(&msg, serialized.data(), serialized.size());
+    msgpack::object_handle msg = msgpack::unpack(serialized.data(), serialized.size());
 
     msgpack::object obj = msg.get();
 
-    obj.convert(&r2);
+    obj.convert(r2);
 
     if (r1 != r2) {
         throw std::logic_error("msgpack's case: deserialization failed");
@@ -308,10 +307,9 @@ msgpack_serialization_test(size_t iterations)
     for (size_t i = 0; i < iterations; i++) {
         sbuf.clear();
         msgpack::pack(sbuf, r1);
-        msgpack::unpacked msg;
-        msgpack::unpack(&msg, sbuf.data(), sbuf.size());
+        msgpack::object_handle msg = msgpack::unpack(sbuf.data(), sbuf.size());
         msgpack::object obj = msg.get();
-        obj.convert(&r2);
+        obj.convert(r2);
     }
     auto finish = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
@@ -372,7 +370,7 @@ avro_serialization_test(size_t iterations)
         r1.strings.push_back(kStringValue);
     }
 
-    std::auto_ptr<avro::OutputStream> out = avro::memoryOutputStream();
+    std::unique_ptr<avro::OutputStream> out = avro::memoryOutputStream();
     avro::EncoderPtr encoder = avro::binaryEncoder();
 
     encoder->init(*out);
@@ -380,7 +378,7 @@ avro_serialization_test(size_t iterations)
 
     auto serialized_size = out->byteCount();
 
-    std::auto_ptr<avro::InputStream> in = avro::memoryInputStream(*out);
+    std::unique_ptr<avro::InputStream> in = avro::memoryInputStream(*out);
     avro::DecoderPtr decoder = avro::binaryDecoder();
 
     decoder->init(*in);
