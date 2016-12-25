@@ -99,7 +99,7 @@ ExternalProject_Add(
     PREFIX ${msgpack_PREFIX}
     URL "https://github.com/msgpack/msgpack-c/releases/download/cpp-2.0.0/msgpack-2.0.0.tar.gz"
     URL_MD5 "55148cd856c72f954a6eb9cc889a7d2a"
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${msgpack_PREFIX} -DCMAKE_BUILD_TYPE=${msgpack_PREFIX}
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${msgpack_PREFIX} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
     BUILD_IN_SOURCE 1
     LOG_UPDATE ON
     LOG_BUILD ON
