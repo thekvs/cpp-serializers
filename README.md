@@ -63,7 +63,7 @@ on a typical desktop computer with Intel Core i5 processor running Ubuntu 14.04.
 | msgpack        | 11902         | 23560           |
 | cereal         | 17416         | 10688           |
 | avro           | 12288         | 31750           |
-| YAS            | 17015         | 6590            |
+| YAS            | 17015         | 4945            |
 
 ###### Size
 
