@@ -10,6 +10,7 @@ Compare various data serialization libraries for C++.
 * [Avro](http://avro.apache.org/)
 * [Capnproto](https://capnproto.org/)
 * [Flatbuffers](https://google.github.io/flatbuffers/)
+* [YAS](https://github.com/niXman/yas)
 
 #### Build
 This project does not have any external library dependencies. All (boost, thrift etc.) needed libraries are downloaded
@@ -51,6 +52,7 @@ on a typical desktop computer with Intel Core i5 processor running Ubuntu 14.04.
 * avro 1.8.1
 * capnproto 0.5.3
 * flatbuffers 1.4.0
+* YAS 3.0.0
 
 | serializer     | object's size | avg. total time |
 | -------------- | ------------- | --------------- |
@@ -61,6 +63,7 @@ on a typical desktop computer with Intel Core i5 processor running Ubuntu 14.04.
 | msgpack        | 11902         | 23560           |
 | cereal         | 17416         | 10688           |
 | avro           | 12288         | 31750           |
+| YAS            | 17015         | 6590            |
 
 ###### Size
 
