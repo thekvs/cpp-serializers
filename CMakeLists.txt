@@ -192,6 +192,18 @@ include_directories(${flatbuffers_PREFIX}/include)
 set(FLATBUFFERS_LIBRARIES ${flatbuffers_PREFIX}/lib/libflatbuffers.a)
 set(FLATBUFFERS_GENERATOR ${flatbuffers_PREFIX}/bin/flatc)
 
+set(yas_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/yas)
+ExternalProject_Add(
+    yas
+    PREFIX ${yas_PREFIX}
+    URL "https://github.com/niXman/yas/archive/3.0.zip"
+    URL_MD5 "906ac6654557052c6bfffbe7aa8024a8"
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND ""
+    INSTALL_COMMAND mkdir -p ${yas_PREFIX}/include/ && cp -r ${yas_PREFIX}/src/yas/include/yas ${yas_PREFIX}/include/
+)
+include_directories(${yas_PREFIX}/include)
+
 set(LINKLIBS
     ${THRIFT_LIBRARIES}
     ${MSGPACK_LIBRARIES}
@@ -279,6 +291,7 @@ set(FLATBUFFERS_SERIALIZATION_SOURCES ${cpp_serializers_SOURCE_DIR}/flatbuffers/
 
 set(BOOST_SERIALIZATION_SOURCES ${cpp_serializers_SOURCE_DIR}/boost/record.cpp)
 set(CEREAL_SERIALIZATION_SOURCES ${cpp_serializers_SOURCE_DIR}/cereal/record.cpp)
+set(YAS_SERIALIZATION_SOURCES ${cpp_serializers_SOURCE_DIR}/yas/record.cpp)
 
 add_executable(
     benchmark
@@ -290,7 +303,8 @@ add_executable(
     ${CEREAL_SERIALIZATION_SOURCES}
     ${AVRO_SERIALIZATION_SOURCES}
     ${FLATBUFFERS_SERIALIZATION_SOURCES}
+    ${YAS_SERIALIZATION_SOURCES}
 )
-add_dependencies(benchmark thrift msgpack protobuf capnproto boost cereal avro flatbuffers)
+add_dependencies(benchmark thrift msgpack protobuf capnproto boost cereal avro flatbuffers yas)
 target_link_libraries(benchmark ${LINKLIBS})
 set_target_properties(benchmark PROPERTIES COMPILE_FLAGS "-std=c++11")
