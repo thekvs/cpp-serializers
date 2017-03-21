@@ -14,8 +14,6 @@
 
 namespace yas_test {
 
-enum { flags = yas::binary|yas::no_header|yas::seq_size_32 };
-
 typedef std::vector<int64_t>     Integers;
 typedef std::vector<std::string> Strings;
 
@@ -39,8 +37,22 @@ struct Record {
     }
 };
 
-void to_string(const Record &record, std::string &data);
-void from_string(Record &record, const std::string &data);
+template<std::size_t opts>
+void to_string(const Record &record, std::string &data) {
+    yas::mem_ostream os;
+    yas::binary_oarchive<yas::mem_ostream, opts> oa(os);
+    oa & record;
+    
+    auto buf = os.get_intrusive_buffer();
+    data.assign(buf.data, buf.size);
+}
+
+template<std::size_t opts>
+void from_string(Record &record, const std::string &data) {
+    yas::mem_istream is(data.c_str(), data.size());
+    yas::binary_iarchive<yas::mem_istream, opts> ia(is);
+    ia & record;
+}
 
 } // namespace
 

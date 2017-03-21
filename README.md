@@ -52,18 +52,19 @@ on a typical desktop computer with Intel Core i5 processor running Ubuntu 14.04.
 * avro 1.8.1
 * capnproto 0.5.3
 * flatbuffers 1.4.0
-* YAS 3.0.0
+* YAS 4.0.0
 
 | serializer     | object's size | avg. total time |
 | -------------- | ------------- | --------------- |
-| thrift-binary  | 17017         | 13763           |
-| thrift-compact | 11597         | 27017           |
+| thrift-binary  | 17017         | 22815           |
+| thrift-compact | 11597         | 26427           |
 | protobuf       | 12571         | 21034           |
-| boost          | 17470         | 22945           |
-| msgpack        | 11902         | 23560           |
-| cereal         | 17416         | 10688           |
-| avro           | 12288         | 31750           |
-| YAS            | 17015         | 4945            |
+| boost          | 17470         | 22471           |
+| msgpack        | 11902         | 25931           |
+| cereal         | 17416         | 10304           |
+| avro           | 12288         | 31658           |
+| yas            | 17416         | 4044            |
+| yas-compact    | 12830         | 21928           |
 
 ###### Size
 
@@ -79,8 +80,8 @@ serialize/deserialize cycle of the already built data structure.
 
 | serializer     | object's size | avg. total time |
 | -------------- | ------------- | --------------- |
-| capnproto      | 17768         | 4396            |
-| flatbuffers    | 17632         | 12494           |
+| capnproto      | 17768         | 4259            |
+| flatbuffers    | 17632         | 12762           |
 
 ![Time](images/time2.png)
 

@@ -471,6 +471,7 @@ flatbuffers_serialization_test(size_t iterations)
     std::cout << "flatbuffers: time = " << duration << " milliseconds" << std::endl << std::endl;
 }
 
+template<std::size_t opts>
 void
 yas_serialization_test(size_t iterations)
 {
@@ -488,30 +489,39 @@ yas_serialization_test(size_t iterations)
 
     std::string serialized;
 
-    to_string(r1, serialized);
-    from_string(r2, serialized);
+    to_string<opts>(r1, serialized);
+    from_string<opts>(r2, serialized);
 
     if (r1 != r2) {
         throw std::logic_error("yas' case: deserialization failed");
     }
 
-    std::cout << "yas: version = " << YAS_VERSION_STRING << std::endl;
-    std::cout << "yas: size = " << serialized.size() << " bytes" << std::endl;
+    if ( opts & yas::compacted ) {
+        std::cout << "yas-compact: version = " << YAS_VERSION_STRING << std::endl;
+        std::cout << "yas-compact: size = " << serialized.size() << " bytes" << std::endl;
+    } else {
+        std::cout << "yas: version = " << YAS_VERSION_STRING << std::endl;
+        std::cout << "yas: size = " << serialized.size() << " bytes" << std::endl;
+    }
     
     auto start = std::chrono::high_resolution_clock::now();
     for (size_t i = 0; i < iterations; i++) {
         yas::mem_ostream os;
-        yas::binary_oarchive<yas::mem_ostream, flags> oa(os);
+        yas::binary_oarchive<yas::mem_ostream, opts> oa(os);
         oa & r1;
 
         yas::mem_istream is(os.get_intrusive_buffer());
-        yas::binary_iarchive<yas::mem_istream, flags> ia(is);
+        yas::binary_iarchive<yas::mem_istream, opts> ia(is);
         ia & r2;
     }
     auto finish = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
 
-    std::cout << "yas: time = " << duration << " milliseconds" << std::endl << std::endl;
+    if ( opts & yas::compacted ) {
+        std::cout << "yas-compact: time = " << duration << " milliseconds" << std::endl << std::endl;
+    } else {
+        std::cout << "yas: time = " << duration << " milliseconds" << std::endl << std::endl;
+    }
 }
 
 int
@@ -520,7 +530,7 @@ main(int argc, char **argv)
     GOOGLE_PROTOBUF_VERIFY_VERSION;
 
     if (argc < 2) {
-        std::cout << "usage: " << argv[0] << " N [thrift-binary thrift-compact protobuf boost msgpack cereal avro capnproto flatbuffers yas]";
+        std::cout << "usage: " << argv[0] << " N [thrift-binary thrift-compact protobuf boost msgpack cereal avro capnproto flatbuffers yas yas-compact]";
         std::cout << std::endl << std::endl;
         std::cout << "arguments: " << std::endl;
         std::cout << " N  -- number of iterations" << std::endl << std::endl;
@@ -585,8 +595,13 @@ main(int argc, char **argv)
         if (names.empty() || names.find("flatbuffers") != names.end()) {
             flatbuffers_serialization_test(iterations);
         }
+
         if (names.empty() || names.find("yas") != names.end()) {
-            yas_serialization_test(iterations);
+            yas_serialization_test<yas::binary|yas::no_header>(iterations);
+        }
+        
+        if (names.empty() || names.find("yas-compact") != names.end()) {
+            yas_serialization_test<yas::binary|yas::no_header|yas::compacted>(iterations);
         }
     } catch (std::exception &exc) {
         std::cerr << "Error: " << exc.what() << std::endl;
