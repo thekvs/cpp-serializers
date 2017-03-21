@@ -20,19 +20,19 @@ size <- c(
 )
 # for t in thrift-binary thrift-compact protobuf boost msgpack cereal avro yas yas-compact; do rm -f /tmp/$t.time; echo -n "$t: "; for i in `seq 1 50`; do ./benchmark 1000000 $t | grep time | awk '{print $4}' >>/tmp/$t.time; done; awk '{ sum += $1 } END { print sum/50}' /tmp/$t.time; done
 time <- c(
-     22815 # thrift-binary
-    ,26427 # thrift-compact
-    ,22471 # protobuf
-    ,12272 # boost
-    ,25931 # msgpack
-    ,10304 # cereal
-    ,31658 # avro
-    ,4044  # yas
-    ,21928 # yas-compact
+     13748 # thrift-binary
+    ,25947 # thrift-compact
+    ,24196 # protobuf
+    ,21717 # boost
+    ,29597 # msgpack
+    ,11121 # cereal
+    ,31880 # avro
+    ,5113  # yas
+    ,21858 # yas-compact
 )
 time2 <- c(
-     4259  # capnproto
-    ,12762 # flatbuffers
+     4460  # capnproto
+    ,12755 # flatbuffers
 )
 
 data.size <- as.data.frame(list(serializer = names.size, size = size))
