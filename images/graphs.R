@@ -1,34 +1,39 @@
 library(ggplot2)
 
-names.size <- c("thrift-binary", "thrift-compact", "protobuf", "boost", "msgpack", "cereal", "avro", "capnproto", "flatbuffers", "yas")
-names.time <- c("thrift-binary", "thrift-compact", "protobuf", "boost", "msgpack", "cereal", "avro", "yas")
+names.size <- c("thrift-binary", "thrift-compact", "protobuf", "boost", "msgpack", "cereal", "avro", "capnproto", "flatbuffers", "yas", "yas-compact")
+names.time <- c("thrift-binary", "thrift-compact", "protobuf", "boost", "msgpack", "cereal", "avro", "yas", "yas-compact")
 names.time2 <- c("capnproto", "flatbuffers")
 # data from the 1000000 simulations
-# for t in thrift-binary thrift-compact protobuf boost msgpack cereal avro yas; do echo -n "$t: "; ./benchmark 1 $t | grep size | awk '{print $4}'; done
+# for t in thrift-binary thrift-compact protobuf boost msgpack cereal avro yas yas-compact; do echo -n "$t: "; ./benchmark 1 $t | grep size | awk '{print $4}'; done
 size <- c(
-     17017
-    ,11597
-    ,11574
-    ,17470
-    ,11802
-    ,17416
-    ,12288
-    ,17768
-    ,17632
-    ,17015
+     17017 # thrift-binary
+    ,11597 # thrift-compact
+    ,11574 # protobuf
+    ,17470 # boost
+    ,11802 # msgpack
+    ,17416 # cereal
+    ,12288 # avro
+    ,17768 # capnproto
+    ,17632 # flatbuffers
+    ,17416 # yas
+    ,12830 # yas-compact
 )
-# for t in thrift-binary thrift-compact protobuf boost msgpack cereal avro yas; do rm -f /tmp/$t.time; echo -n "$t: "; for i in `seq 1 50`; do ./benchmark 1000000 $t | grep time | awk '{print $4}' >>/tmp/$t.time; done; awk '{ sum += $1 } END { print sum/50}' /tmp/$t.time; done
+# for t in thrift-binary thrift-compact protobuf boost msgpack cereal avro yas yas-compact; do rm -f /tmp/$t.time; echo -n "$t: "; for i in `seq 1 50`; do ./benchmark 1000000 $t | grep time | awk '{print $4}' >>/tmp/$t.time; done; awk '{ sum += $1 } END { print sum/50}' /tmp/$t.time; done
 time <- c(
-     13179 # thrift-binary
-    ,25562 # thrift-compact
-    ,22468 # protobuf
-    ,21405 # boost
-    ,27805 # msgpack
-    ,10654 # cereal
-    ,31231 # avro
-    ,4945  # yas
+     13748 # thrift-binary
+    ,25947 # thrift-compact
+    ,24196 # protobuf
+    ,21717 # boost
+    ,29597 # msgpack
+    ,11121 # cereal
+    ,31880 # avro
+    ,5113  # yas
+    ,21858 # yas-compact
 )
-time2 <- c(4396, 12494)
+time2 <- c(
+     4460  # capnproto
+    ,12755 # flatbuffers
+)
 
 data.size <- as.data.frame(list(serializer = names.size, size = size))
 data.time <- as.data.frame(list(serializer = names.time, time = time))

@@ -31,8 +31,8 @@ endif()
 
 include_directories(${cpp_serializers_SOURCE_DIR})
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -W")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -W")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -W -Wextra")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -W -Wextra")
 
 find_package(ZLIB)
 if (NOT ZLIB_FOUND)
@@ -196,8 +196,8 @@ set(yas_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/yas)
 ExternalProject_Add(
     yas
     PREFIX ${yas_PREFIX}
-    URL "https://github.com/niXman/yas/archive/3.0.zip"
-    URL_MD5 "906ac6654557052c6bfffbe7aa8024a8"
+    URL "https://github.com/niXman/yas/archive/4.0.zip"
+    URL_MD5 "7f9ed59c21020005046297934c196bd8"
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND mkdir -p ${yas_PREFIX}/include/ && cp -r ${yas_PREFIX}/src/yas/include/yas ${yas_PREFIX}/include/
