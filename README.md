@@ -49,22 +49,22 @@ on a typical desktop computer with Intel Core i5 processor running Ubuntu 14.04.
 * boost 1.62.0
 * msgpack 2.0.0
 * cereal 1.2.1
-* avro 1.8.1
+* avro 1.8.2
 * capnproto 0.5.3
 * flatbuffers 1.4.0
-* YAS 4.0.0
+* YAS 5.0.0
 
 | serializer     | object's size | avg. total time |
 | -------------- | ------------- | --------------- |
-| thrift-binary  | 17017         | 13748           |
-| thrift-compact | 11597         | 25947           |
-| protobuf       | 12571         | 24196           |
-| boost          | 17470         | 21717           |
-| msgpack        | 11902         | 29597           |
-| cereal         | 17416         | 11121           |
-| avro           | 12288         | 31880           |
-| yas            | 17416         | 5113            |
-| yas-compact    | 12830         | 21858           |
+| thrift-binary  | 17017         | 13335           |
+| thrift-compact | 13378         | 33205           |
+| protobuf       | 16116         | 24717           |
+| boost          | 17470         | 21760           |
+| msgpack        | 13402         | 33815           |
+| cereal         | 17416         | 11031           |
+| avro           | 16384         | 44187           |
+| yas            | 17416         | 3223            |
+| yas-compact    | 13553         | 21481           |
 
 ###### Size
 
@@ -80,8 +80,8 @@ serialize/deserialize cycle of the already built data structure.
 
 | serializer     | object's size | avg. total time |
 | -------------- | ------------- | --------------- |
-| capnproto      | 17768         | 4460            |
-| flatbuffers    | 17632         | 12755           |
+| capnproto      | 17768         | 4849            |
+| flatbuffers    | 17632         | 12520           |
 
 ![Time](images/time2.png)
 
