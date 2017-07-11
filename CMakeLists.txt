@@ -162,8 +162,8 @@ ExternalProject_Add(
     avro
     DEPENDS boost
     PREFIX ${avro_PREFIX}
-    URL "http://www.eu.apache.org/dist/avro/avro-1.8.1/avro-src-1.8.1.tar.gz"
-    URL_MD5 "bc1901bd2a83956dbb9e7f968affc607"
+    URL "http://www.eu.apache.org/dist/avro/avro-1.8.2/avro-src-1.8.2.tar.gz"
+    URL_MD5 "cb56b43eb45c3db13a35b56f6df633e2"
     CONFIGURE_COMMAND cmake -DBOOST_INCLUDEDIR=${boost_PREFIX}/include -DBOOST_LIBRARYDIR=${boost_PREFIX}/lib -DBoost_NO_SYSTEM_PATHS=ON -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX=${avro_PREFIX} -DBUILD_SHARED_LIBS=OFF ${avro_PREFIX}/src/avro/lang/c++/
     # Due to some issues with using statically built boost libraries AND zlib in avro tests
     # build only necessary parts and install them in a very hackish way.
@@ -196,8 +196,8 @@ set(yas_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/yas)
 ExternalProject_Add(
     yas
     PREFIX ${yas_PREFIX}
-    URL "https://github.com/niXman/yas/archive/4.0.zip"
-    URL_MD5 "7f9ed59c21020005046297934c196bd8"
+    URL "https://github.com/niXman/yas/archive/5.0.zip"
+    URL_MD5 "1acaef7cb8ab4178453dfa67a0112ea8"
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND mkdir -p ${yas_PREFIX}/include/ && cp -r ${yas_PREFIX}/src/yas/include/yas ${yas_PREFIX}/include/
