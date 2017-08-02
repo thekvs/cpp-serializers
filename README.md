@@ -44,14 +44,14 @@ $ ./benchmark 100000 protobuf cereal
 Following results were obtained running 1000000 serialize-deserialize operations 50 times and then averaging results
 on a typical desktop computer with Intel Core i5 processor running Ubuntu 14.04. Exact versions of libraries used are:
 
-* thrift 0.9.3
+* thrift 0.10.0
 * protobuf 3.1.0
 * boost 1.62.0
-* msgpack 2.0.0
+* msgpack 2.1.3
 * cereal 1.2.1
 * avro 1.8.2
-* capnproto 0.5.3
-* flatbuffers 1.4.0
+* capnproto 0.6.1
+* flatbuffers 1.7.1
 * YAS 5.0.0
 
 | serializer     | object's size | avg. total time |

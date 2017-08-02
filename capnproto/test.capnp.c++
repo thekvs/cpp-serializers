@@ -79,14 +79,11 @@ const ::capnp::_::RawSchema s_b11f3695c22ca61e = {
 namespace capnp_test {
 
 // Record
-#ifndef _MSC_VER
 constexpr uint16_t Record::_capnpPrivate::dataWordSize;
 constexpr uint16_t Record::_capnpPrivate::pointerCount;
-#endif
 #if !CAPNP_LITE
 constexpr ::capnp::Kind Record::_capnpPrivate::kind;
 constexpr ::capnp::_::RawSchema const* Record::_capnpPrivate::schema;
-constexpr ::capnp::_::RawBrandedSchema const* Record::_capnpPrivate::brand;
 #endif  // !CAPNP_LITE
 
 

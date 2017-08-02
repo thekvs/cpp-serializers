@@ -79,9 +79,9 @@ ExternalProject_Add(
     thrift
     PREFIX ${thrift_PREFIX}
     DEPENDS boost
-    URL "http://www.eu.apache.org/dist/thrift/0.9.3/thrift-0.9.3.tar.gz"
-    URL_MD5 "88d667a8ae870d5adeca8cb7d6795442"
-    CONFIGURE_COMMAND CXX=${CMAKE_CXX_COMPILER} CC=${CMAKE_C_COMPILER} ${thrift_PREFIX}/src/thrift/configure --prefix=${thrift_PREFIX} --libdir=${thrift_PREFIX}/lib --with-boost=${Boost_INCLUDE_DIRS} --enable-shared=no --with-libevent=no --with-c_glib=no --with-java=no --with-erlang=no --with-python=no --with-perl=no --with-php=no --with-php_extension=no --with-ruby=no --with-haskell=no --with-go=no --with-d=no --with-lua=no --with-qt4=no --with-nodejs=no --disable-tests
+    URL "http://www-eu.apache.org/dist/thrift/0.10.0/thrift-0.10.0.tar.gz"
+    URL_MD5 "795c5dd192e310ffff38cfd9430d6b29"
+    CONFIGURE_COMMAND CXX=${CMAKE_CXX_COMPILER} CC=${CMAKE_C_COMPILER} ${thrift_PREFIX}/src/thrift/configure --prefix=${thrift_PREFIX} --libdir=${thrift_PREFIX}/lib --with-boost=${Boost_INCLUDE_DIRS} --enable-shared=no --with-libevent=no --with-c_glib=no --with-java=no --with-erlang=no --with-python=no --with-perl=no --with-php=no --with-php_extension=no --with-ruby=no --with-haskell=no --with-go=no --with-d=no --with-lua=no --with-qt4=no --with-qt5=no --with-nodejs=no --disable-tests --enable-plugin=no
     BUILD_COMMAND $(MAKE)
     INSTALL_COMMAND $(MAKE) install
     BUILD_IN_SOURCE 1
@@ -97,8 +97,8 @@ set(msgpack_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/msgpack)
 ExternalProject_Add(
     msgpack
     PREFIX ${msgpack_PREFIX}
-    URL "https://github.com/msgpack/msgpack-c/releases/download/cpp-2.0.0/msgpack-2.0.0.tar.gz"
-    URL_MD5 "55148cd856c72f954a6eb9cc889a7d2a"
+    URL "https://github.com/msgpack/msgpack-c/releases/download/cpp-2.1.3/msgpack-2.1.3.tar.gz"
+    URL_MD5 "e604cee971f20f8b4f885163deca2062"
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${msgpack_PREFIX} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
     BUILD_IN_SOURCE 1
     LOG_UPDATE ON
@@ -130,8 +130,8 @@ set(capnproto_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/capnproto)
 ExternalProject_Add(
     capnproto
     PREFIX ${capnproto_PREFIX}
-    URL "https://github.com/sandstorm-io/capnproto/archive/v0.5.3.tar.gz"
-    URL_MD5 "909bd13ad6b8bc840ac78ab8f5bcb0a4"
+    URL "https://github.com/capnproto/capnproto/archive/v0.6.1.tar.gz"
+    URL_MD5 "481d0f2fe24f46ce25234ea9704ef0b4"
     CONFIGURE_COMMAND CXX=${CMAKE_CXX_COMPILER} CC=${CMAKE_C_COMPILER} cd ${capnproto_PREFIX}/src/capnproto/c++ && ${AUTORECONF} -i && cd - && ${capnproto_PREFIX}/src/capnproto/c++/configure --prefix=${capnproto_PREFIX} --libdir=${capnproto_PREFIX}/lib --enable-shared=no
     BUILD_COMMAND $(MAKE)
     INSTALL_COMMAND $(MAKE) install
@@ -181,8 +181,8 @@ set(flatbuffers_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/flatbuffers)
 ExternalProject_Add(
     flatbuffers
     PREFIX ${flatbuffers_PREFIX}
-    URL "https://github.com/google/flatbuffers/archive/v1.4.0.tar.gz"
-    URL_MD5 "03d5b0e6233362b0951f22374d36b553"
+    URL "https://github.com/google/flatbuffers/archive/v1.7.1.tar.gz"
+    URL_MD5 "81934736f31fbd2cfdb513e71b53b358"
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${flatbuffers_PREFIX} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
     LOG_UPDATE ON
     LOG_CONFIGURE ON
