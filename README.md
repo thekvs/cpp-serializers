@@ -25,6 +25,21 @@ $ cmake /path/to/cpp-serializers -DCMAKE_BUILD_TYPE=Release
 $ make
 ```
 
+#### Additional libraries required for building
+
+* `zlib` not found, install it via
+```
+$ apt-get install zlib1g-dev
+```
+* `autoreconf` not found, install it via
+```
+$ apt-get install dh-autoreconf
+```
+* building `thrift` requires openssl dev files installed, install it via
+```
+$ apt-get install libssl-dev
+```
+
 #### Usage
 * Test __all__ serializers, run each serializer 100000 times:
 ```
