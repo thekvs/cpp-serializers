@@ -31,8 +31,8 @@ endif()
 
 include_directories(${cpp_serializers_SOURCE_DIR})
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -W -Wextra")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -W -Wextra")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -W -Wextra -O2")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -W -Wextra -O2")
 
 find_package(ZLIB)
 if (NOT ZLIB_FOUND)
@@ -156,6 +156,20 @@ ExternalProject_Add(
     INSTALL_COMMAND mkdir -p ${cereal_PREFIX}/include/ && cp -r ${cereal_PREFIX}/src/cereal/include/cereal ${cereal_PREFIX}/include/
 )
 include_directories(${cereal_PREFIX}/include)
+
+set(bitsery_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/bitsery)
+ExternalProject_Add(
+    bitsery
+    PREFIX ${bitsery_PREFIX}
+    URL "https://github.com/fraillt/bitsery/archive/v3.0.0.tar.gz"
+    URL_MD5 "4500c0ed4a08e8009013c55e92951738"
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND ""
+    INSTALL_COMMAND mkdir -p ${bitsery_PREFIX}/include/ && cp -r ${bitsery_PREFIX}/src/bitsery/include/bitsery ${bitsery_PREFIX}/include/
+)
+include_directories(${bitsery_PREFIX}/include)
+
+
 
 set(avro_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/avro)
 ExternalProject_Add(
@@ -305,6 +319,6 @@ add_executable(
     ${FLATBUFFERS_SERIALIZATION_SOURCES}
     ${YAS_SERIALIZATION_SOURCES}
 )
-add_dependencies(benchmark thrift msgpack protobuf capnproto boost cereal avro flatbuffers yas)
+add_dependencies(benchmark thrift msgpack protobuf capnproto boost cereal bitsery avro flatbuffers yas)
 target_link_libraries(benchmark ${LINKLIBS})
 set_target_properties(benchmark PROPERTIES COMPILE_FLAGS "-std=c++11")
