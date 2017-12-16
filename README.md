@@ -52,7 +52,7 @@ on a typical desktop computer with Intel Core i5 processor running Ubuntu 14.04.
 * avro 1.8.2
 * capnproto 0.6.1
 * flatbuffers 1.7.1
-* YAS 5.0.0
+* YAS 6.0.2
 
 | serializer     | object's size | avg. total time |
 | -------------- | ------------- | --------------- |
@@ -63,8 +63,8 @@ on a typical desktop computer with Intel Core i5 processor running Ubuntu 14.04.
 | msgpack        | 13402         | 33815           |
 | cereal         | 17416         | 11031           |
 | avro           | 16384         | 44187           |
-| yas            | 17416         | 3223            |
-| yas-compact    | 13553         | 21481           |
+| yas            | 17416         | 3152            |
+| yas-compact    | 13321         | 24878           |
 
 ###### Size
 

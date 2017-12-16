@@ -196,8 +196,8 @@ set(yas_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/yas)
 ExternalProject_Add(
     yas
     PREFIX ${yas_PREFIX}
-    URL "https://github.com/niXman/yas/archive/5.0.zip"
-    URL_MD5 "1acaef7cb8ab4178453dfa67a0112ea8"
+    URL "https://github.com/niXman/yas/archive/6.0.2.zip"
+    URL_MD5 "ed1c63a6a6bb2db2ad7f8547192d79a7"
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND mkdir -p ${yas_PREFIX}/include/ && cp -r ${yas_PREFIX}/src/yas/include/yas ${yas_PREFIX}/include/

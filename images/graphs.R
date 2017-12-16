@@ -16,7 +16,7 @@ size <- c(
     ,17768 # capnproto
     ,17632 # flatbuffers
     ,17416 # yas
-    ,13553 # yas-compact
+    ,13321 # yas-compact
 )
 # for t in thrift-binary thrift-compact protobuf boost msgpack cereal avro yas yas-compact; do rm -f /tmp/$t.time; echo -n "$t: "; for i in `seq 1 50`; do ./benchmark 1000000 $t | grep time | awk '{print $4}' >>/tmp/$t.time; done; awk '{ sum += $1 } END { print sum/50}' /tmp/$t.time; done
 time <- c(
@@ -27,8 +27,8 @@ time <- c(
     ,33815 # msgpack
     ,11031 # cereal
     ,44187 # avro
-    ,3223  # yas
-    ,21481 # yas-compact
+    ,3152  # yas
+    ,24878 # yas-compact
 )
 time2 <- c(
      4849  # capnproto
