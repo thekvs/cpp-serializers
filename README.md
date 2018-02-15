@@ -66,7 +66,7 @@ on a typical desktop computer with Intel Core i5 processor running Ubuntu 14.04.
 | yas            | 17416         | 3152            |
 | yas-compact    | 13321         | 24878           |
 
-###### Size
+###### Size [WARNING! Y-axis is not properly scaled! See issue #13]
 
 ![Size](images/size.png)
 
