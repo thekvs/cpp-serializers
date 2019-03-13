@@ -15,7 +15,7 @@ Compare various data serialization libraries for C++.
 #### Build
 This project does not have any external library dependencies. All (boost, thrift etc.) needed libraries are downloaded
 and built automatically, but you need enough free disk space to build all components. To build this project you need a compiler that supports
-C++11 features. Project was tested with GCC 4.8.2 (Ubuntu 14.04).
+C++14 features. Project was tested with clang 5.0.0 (Ubuntu 16.04).
 
 ```
 $ git clone https://github.com/thekvs/cpp-serializers.git
@@ -42,29 +42,30 @@ $ ./benchmark 100000 protobuf cereal
 #### Results
 
 Following results were obtained running 1000000 serialize-deserialize operations 50 times and then averaging results
-on a typical desktop computer with Intel Core i5 processor running Ubuntu 14.04. Exact versions of libraries used are:
+on a typical desktop computer with Intel Core i7 processor running Ubuntu 16.04. Exact versions of libraries used are:
 
-* thrift 0.10.0
-* protobuf 3.1.0
-* boost 1.62.0
-* msgpack 2.1.3
-* cereal 1.2.1
+* thrift 0.12.0
+* protobuf 3.7.0
+* boost 1.69.0
+* msgpack 3.1.1
+* cereal 1.2.2
 * avro 1.8.2
-* capnproto 0.6.1
-* flatbuffers 1.7.1
-* YAS 6.0.2
+* capnproto 0.7.0
+* flatbuffers 1.10.0
+* YAS 7.0.2
 
 | serializer     | object's size | avg. total time |
 | -------------- | ------------- | --------------- |
-| thrift-binary  | 17017         | 13335           |
-| thrift-compact | 13378         | 33205           |
-| protobuf       | 16116         | 24717           |
-| boost          | 17470         | 21760           |
-| msgpack        | 13402         | 33815           |
-| cereal         | 17416         | 11031           |
-| avro           | 16384         | 44187           |
-| yas            | 17416         | 3152            |
-| yas-compact    | 13321         | 24878           |
+| thrift-binary  | 17017         | 1190.22         |
+| thrift-compact | 13378         | 3474.32         |
+| protobuf       | 16116         | 2312.78         |
+| boost          | 17470         | 1195.04         |
+| msgpack        | 13402         | 2560.6          |
+| cereal         | 17416         | 1052.46         |
+| avro           | 16384         | 4488.18         |
+| yas            | 17416         | 302.7           |
+| yas-compact    | 13321         | 2063.34         |
+
 
 ###### Size
 
@@ -80,8 +81,8 @@ serialize/deserialize cycle of the already built data structure.
 
 | serializer     | object's size | avg. total time |
 | -------------- | ------------- | --------------- |
-| capnproto      | 17768         | 4849            |
-| flatbuffers    | 17632         | 12520           |
+| capnproto      | 17768         | 400.98          |
+| flatbuffers    | 17632         | 491.5           |
 
 ![Time](images/time2.png)
 
