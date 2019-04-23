@@ -4,9 +4,10 @@
 #include <vector>
 #include <stdint.h>
 
-const size_t      kStringsCount = 100;
-const std::string kStringValue  = "shgfkghsdfjhgsfjhfgjhfgjsffghgsfdhgsfdfkdjhfioukjhkfdljgdfkgvjafdhasgdfwurtjkghfsdjkfg";
+const size_t kStringsCount = 100;
+const std::string kStringValue = "shgfkghsdfjhgsfjhfgjhfgjsffghgsfdhgsfdfkdjhfioukjhkfdljgdfkgvjafdhasgdfwurtjkghfsdjkfg";
 
+// clang-format off
 const std::vector<int64_t> kIntegers = {
     -7363025924956902506, 433747491,            -1063289711,
     -3099617426797642053, -10,                  -28373,
@@ -343,5 +344,6 @@ const std::vector<int64_t> kIntegers = {
     -10440,               -33,                  -18991,
     -102
 };
+// clang-format on
 
 #endif

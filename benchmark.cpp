@@ -34,11 +34,11 @@ enum class ThriftSerializationProto { Binary, Compact };
 void
 thrift_serialization_test(size_t iterations, ThriftSerializationProto proto = ThriftSerializationProto::Binary)
 {
-    using apache::thrift::transport::TMemoryBuffer;
     using apache::thrift::protocol::TBinaryProtocol;
-    using apache::thrift::protocol::TCompactProtocol;
     using apache::thrift::protocol::TBinaryProtocolT;
+    using apache::thrift::protocol::TCompactProtocol;
     using apache::thrift::protocol::TCompactProtocolT;
+    using apache::thrift::transport::TMemoryBuffer;
 
     using namespace thrift_test;
 
