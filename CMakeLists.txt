@@ -13,9 +13,9 @@ include(ExternalProject)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-CHECK_CXX_COMPILER_FLAG("-std=c++11" CXX11)
-if (NOT CXX11)
-    message(FATAL_ERROR "C++ compiler doesn't support C++11")
+CHECK_CXX_COMPILER_FLAG("-std=c++14" CXX14)
+if (NOT CXX14)
+    message(FATAL_ERROR "C++ compiler doesn't support C++14")
 endif()
 
 CHECK_INCLUDE_FILES("inttypes.h" HAVE_INTTYPES_H)
@@ -58,8 +58,8 @@ set(boost_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/boost)
 ExternalProject_Add(
     boost
     PREFIX ${boost_PREFIX}
-    URL "http://netcologne.dl.sourceforge.net/project/boost/boost/1.62.0/boost_1_62_0.tar.gz"
-    URL_MD5 "6f4571e7c5a66ccc3323da6c24be8f05"
+    URL "http://netcologne.dl.sourceforge.net/project/boost/boost/1.69.0/boost_1_69_0.tar.gz"
+    URL_MD5 "b50944c0c13f81ce2c006802a1186f5a"
     CONFIGURE_COMMAND ${boost_PREFIX}/src/boost/bootstrap.sh --with-libraries=serialization,filesystem,system,program_options,iostreams --prefix=${boost_PREFIX}
     BUILD_COMMAND ./bjam link=static cxxflags='-fPIC'
     INSTALL_COMMAND ./bjam link=static install
@@ -79,9 +79,9 @@ ExternalProject_Add(
     thrift
     PREFIX ${thrift_PREFIX}
     DEPENDS boost
-    URL "http://www-eu.apache.org/dist/thrift/0.10.0/thrift-0.10.0.tar.gz"
-    URL_MD5 "795c5dd192e310ffff38cfd9430d6b29"
-    CONFIGURE_COMMAND CXX=${CMAKE_CXX_COMPILER} CC=${CMAKE_C_COMPILER} ${thrift_PREFIX}/src/thrift/configure --prefix=${thrift_PREFIX} --libdir=${thrift_PREFIX}/lib --with-boost=${Boost_INCLUDE_DIRS} --enable-shared=no --with-libevent=no --with-c_glib=no --with-java=no --with-erlang=no --with-python=no --with-perl=no --with-php=no --with-php_extension=no --with-ruby=no --with-haskell=no --with-go=no --with-d=no --with-lua=no --with-qt4=no --with-qt5=no --with-nodejs=no --disable-tests --enable-plugin=no
+    URL "http://www-eu.apache.org/dist/thrift/0.12.0/thrift-0.12.0.tar.gz"
+    URL_MD5 "3deebbb4d1ca77dd9c9e009a1ea02183"
+    CONFIGURE_COMMAND CXX=${CMAKE_CXX_COMPILER} CC=${CMAKE_C_COMPILER} ${thrift_PREFIX}/src/thrift/configure --prefix=${thrift_PREFIX} --libdir=${thrift_PREFIX}/lib --with-boost=${Boost_INCLUDE_DIRS} --enable-shared=no --with-libevent=no --with-c_glib=no --with-java=no --with-erlang=no --with-python=no --with-perl=no --with-php=no --with-php_extension=no --with-ruby=no --with-haskell=no --with-go=no --with-d=no --with-lua=no --with-qt4=no --with-qt5=no --with-nodejs=no --with-cl=no --with-dotnetcore=no --with-nodets=no --with-rs=no --disable-tests --enable-plugin=no
     BUILD_COMMAND $(MAKE)
     INSTALL_COMMAND $(MAKE) install
     BUILD_IN_SOURCE 1
@@ -97,8 +97,8 @@ set(msgpack_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/msgpack)
 ExternalProject_Add(
     msgpack
     PREFIX ${msgpack_PREFIX}
-    URL "https://github.com/msgpack/msgpack-c/releases/download/cpp-2.1.3/msgpack-2.1.3.tar.gz"
-    URL_MD5 "e604cee971f20f8b4f885163deca2062"
+    URL "https://github.com/msgpack/msgpack-c/releases/download/cpp-3.1.1/msgpack-3.1.1.tar.gz"
+    URL_MD5 "99ddfbc004576d5b5261a7f0e68962e7"
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${msgpack_PREFIX} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
     BUILD_IN_SOURCE 1
     LOG_UPDATE ON
@@ -112,8 +112,8 @@ set(protobuf_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/protobuf)
 ExternalProject_Add(
     protobuf
     PREFIX ${protobuf_PREFIX}
-    URL "https://github.com/google/protobuf/releases/download/v3.1.0/protobuf-cpp-3.1.0.tar.gz"
-    URL_MD5 "bd5e3eed635a8d32e2b99658633815ef"
+    URL "https://github.com/protocolbuffers/protobuf/releases/download/v3.7.0/protobuf-cpp-3.7.0.tar.gz"
+    URL_MD5 "f1631a8e551e569273d78538f6ecf41c"
     CONFIGURE_COMMAND CXX=${CMAKE_CXX_COMPILER} CC=${CMAKE_C_COMPILER} ${protobuf_PREFIX}/src/protobuf/configure --prefix=${protobuf_PREFIX} --libdir=${protobuf_PREFIX}/lib --enable-shared=no
     BUILD_COMMAND $(MAKE)
     INSTALL_COMMAND $(MAKE) install
@@ -130,8 +130,8 @@ set(capnproto_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/capnproto)
 ExternalProject_Add(
     capnproto
     PREFIX ${capnproto_PREFIX}
-    URL "https://github.com/capnproto/capnproto/archive/v0.6.1.tar.gz"
-    URL_MD5 "481d0f2fe24f46ce25234ea9704ef0b4"
+    URL "https://github.com/capnproto/capnproto/archive/v0.7.0.tar.gz"
+    URL_MD5 "a9de5f042f4cf05515c2d7dfc7f5df21"
     CONFIGURE_COMMAND CXX=${CMAKE_CXX_COMPILER} CC=${CMAKE_C_COMPILER} cd ${capnproto_PREFIX}/src/capnproto/c++ && ${AUTORECONF} -i && cd - && ${capnproto_PREFIX}/src/capnproto/c++/configure --prefix=${capnproto_PREFIX} --libdir=${capnproto_PREFIX}/lib --enable-shared=no
     BUILD_COMMAND $(MAKE)
     INSTALL_COMMAND $(MAKE) install
@@ -149,8 +149,8 @@ set(cereal_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/cereal)
 ExternalProject_Add(
     cereal
     PREFIX ${cereal_PREFIX}
-    URL "https://github.com/USCiLab/cereal/archive/v1.2.1.tar.gz"
-    URL_MD5 "64476ed74c19068ee543b53ad3992261"
+    URL "https://github.com/USCiLab/cereal/archive/v1.2.2.tar.gz"
+    URL_MD5 "4c56c7b9499dba79404250ef9a040481"
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND mkdir -p ${cereal_PREFIX}/include/ && cp -r ${cereal_PREFIX}/src/cereal/include/cereal ${cereal_PREFIX}/include/
@@ -181,8 +181,8 @@ set(flatbuffers_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/flatbuffers)
 ExternalProject_Add(
     flatbuffers
     PREFIX ${flatbuffers_PREFIX}
-    URL "https://github.com/google/flatbuffers/archive/v1.7.1.tar.gz"
-    URL_MD5 "81934736f31fbd2cfdb513e71b53b358"
+    URL "https://github.com/google/flatbuffers/archive/v1.10.0.tar.gz"
+    URL_MD5 "f7d19a3f021d93422b0bc287d7148cd2"
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${flatbuffers_PREFIX} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
     LOG_UPDATE ON
     LOG_CONFIGURE ON
@@ -196,8 +196,8 @@ set(yas_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/yas)
 ExternalProject_Add(
     yas
     PREFIX ${yas_PREFIX}
-    URL "https://github.com/niXman/yas/archive/6.0.2.zip"
-    URL_MD5 "ed1c63a6a6bb2db2ad7f8547192d79a7"
+    URL "https://github.com/niXman/yas/archive/7.0.2.tar.gz"
+    URL_MD5 "d55353960467afabc6774583880a30f0"
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND mkdir -p ${yas_PREFIX}/include/ && cp -r ${yas_PREFIX}/src/yas/include/yas ${yas_PREFIX}/include/
@@ -307,4 +307,4 @@ add_executable(
 )
 add_dependencies(benchmark thrift msgpack protobuf capnproto boost cereal avro flatbuffers yas)
 target_link_libraries(benchmark ${LINKLIBS})
-set_target_properties(benchmark PROPERTIES COMPILE_FLAGS "-std=c++11")
+set_target_properties(benchmark PROPERTIES COMPILE_FLAGS "-std=c++14")

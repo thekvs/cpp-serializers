@@ -24,9 +24,9 @@ struct Record FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_IDS) &&
-           verifier.Verify(ids()) &&
+           verifier.VerifyVector(ids()) &&
            VerifyOffset(verifier, VT_STRINGS) &&
-           verifier.Verify(strings()) &&
+           verifier.VerifyVector(strings()) &&
            verifier.VerifyVectorOfStrings(strings()) &&
            verifier.EndTable();
   }
@@ -41,13 +41,13 @@ struct RecordBuilder {
   void add_strings(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<flatbuffers::String>>> strings) {
     fbb_.AddOffset(Record::VT_STRINGS, strings);
   }
-  RecordBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit RecordBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
   RecordBuilder &operator=(const RecordBuilder &);
   flatbuffers::Offset<Record> Finish() {
-    const auto end = fbb_.EndTable(start_, 2);
+    const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<Record>(end);
     return o;
   }
@@ -77,15 +77,30 @@ inline const flatbuffers_test::Record *GetRecord(const void *buf) {
   return flatbuffers::GetRoot<flatbuffers_test::Record>(buf);
 }
 
+inline const flatbuffers_test::Record *GetSizePrefixedRecord(const void *buf) {
+  return flatbuffers::GetSizePrefixedRoot<flatbuffers_test::Record>(buf);
+}
+
 inline bool VerifyRecordBuffer(
     flatbuffers::Verifier &verifier) {
   return verifier.VerifyBuffer<flatbuffers_test::Record>(nullptr);
+}
+
+inline bool VerifySizePrefixedRecordBuffer(
+    flatbuffers::Verifier &verifier) {
+  return verifier.VerifySizePrefixedBuffer<flatbuffers_test::Record>(nullptr);
 }
 
 inline void FinishRecordBuffer(
     flatbuffers::FlatBufferBuilder &fbb,
     flatbuffers::Offset<flatbuffers_test::Record> root) {
   fbb.Finish(root);
+}
+
+inline void FinishSizePrefixedRecordBuffer(
+    flatbuffers::FlatBufferBuilder &fbb,
+    flatbuffers::Offset<flatbuffers_test::Record> root) {
+  fbb.FinishSizePrefixed(root);
 }
 
 }  // namespace flatbuffers_test
