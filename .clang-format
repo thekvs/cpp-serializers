@@ -1,0 +1,19 @@
+---
+Language: Cpp
+BasedOnStyle: WebKit
+
+BreakBeforeBraces: Linux
+ColumnLimit: 140
+IndentWidth: 4
+Standard: Cpp11
+AllowShortBlocksOnASingleLine: false
+AllowShortFunctionsOnASingleLine: false
+AlwaysBreakTemplateDeclarations: true
+AlwaysBreakAfterReturnType: TopLevelDefinitions
+BinPackParameters: false
+SortIncludes: false
+Cpp11BracedListStyle: true
+
+---
+Language: Proto
+DisableFormat: true
