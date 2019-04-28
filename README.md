@@ -15,7 +15,7 @@ Compare various data serialization libraries for C++.
 #### Build
 This project does not have any external library dependencies. All (boost, thrift etc.) needed libraries are downloaded
 and built automatically, but you need enough free disk space to build all components. To build this project you need a compiler that supports
-C++14 features. Project was tested with clang 5.0.0 (Ubuntu 16.04).
+C++14 features. Project was tested with Clang and GCC compilers.
 
 ```
 $ git clone https://github.com/thekvs/cpp-serializers.git
