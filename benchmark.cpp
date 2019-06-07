@@ -23,6 +23,7 @@
 #include "boost/record.hpp"
 #include "msgpack/record.hpp"
 #include "cereal/record.hpp"
+#include "bitsery/record.hpp"
 #include "avro/record.hpp"
 #include "flatbuffers/test_generated.h"
 #include "yas/record.hpp"
@@ -352,6 +353,52 @@ cereal_serialization_test(size_t iterations)
 }
 
 void
+bitsery_serialization_test(size_t iterations)
+{
+    using namespace bitsery_test;
+
+    Record r1, r2;
+
+    for (size_t i = 0; i < kIntegers.size(); i++) {
+        r1.ids.push_back(kIntegers[i]);
+    }
+
+    for (size_t i = 0; i < kStringsCount; i++) {
+        r1.strings.push_back(kStringValue);
+    }
+
+    std::vector<uint8_t> buf;
+    r2.strings = r1.strings;
+    r2.ids = r1.ids;
+    auto writtenSize = bitsery_serialize(r1, buf);
+    bitsery_deserialize(r2, buf, writtenSize);
+
+    if (r1 != r2) {
+        throw std::logic_error("bitsery's case: deserialization failed");
+    }
+    std::cout << "bitsery: version = " << BITSERY_VERSION << std::endl;
+    std::cout << "bitsery: size = " << writtenSize << " bytes" << std::endl;
+
+    auto start = std::chrono::high_resolution_clock::now();
+    for (size_t i = 0; i < iterations; i++) {
+        buf.clear();
+        auto writtenSize = bitsery_serialize(r1, buf);
+        bitsery_deserialize(r2, buf, writtenSize);
+    }
+    auto finish = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
+
+    std::cout << "bitsery: time = " << duration << " milliseconds" << std::endl << std::endl;
+}
+
+
+
+
+
+
+
+
+void
 avro_serialization_test(size_t iterations)
 {
     using namespace avro_test;
@@ -365,6 +412,7 @@ avro_serialization_test(size_t iterations)
     for (size_t i = 0; i < kStringsCount; i++) {
         r1.strings.push_back(kStringValue);
     }
+    r2.strings.resize(100);
 
     std::unique_ptr<avro::OutputStream> out = avro::memoryOutputStream();
     avro::EncoderPtr encoder = avro::binaryEncoder();
@@ -524,7 +572,7 @@ main(int argc, char** argv)
 
     if (argc < 2) {
         std::cout << "usage: " << argv[0]
-                  << " N [thrift-binary thrift-compact protobuf boost msgpack cereal avro capnproto flatbuffers yas yas-compact]";
+                  << " N [thrift-binary thrift-compact protobuf boost msgpack cereal vro capnproto flatbuffers yas yas-compact bitsery]";
         std::cout << std::endl << std::endl;
         std::cout << "arguments: " << std::endl;
         std::cout << " N  -- number of iterations" << std::endl << std::endl;
@@ -581,6 +629,10 @@ main(int argc, char** argv)
         if (names.empty() || names.find("cereal") != names.end()) {
             cereal_serialization_test(iterations);
         }
+
+        if (names.empty() || names.find("bitsery") != names.end()) {
+            bitsery_serialization_test(iterations);
+        }        
 
         if (names.empty() || names.find("avro") != names.end()) {
             avro_serialization_test(iterations);
