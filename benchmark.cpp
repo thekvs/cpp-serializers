@@ -26,6 +26,7 @@
 #include "avro/record.hpp"
 #include "flatbuffers/test_generated.h"
 #include "yas/record.hpp"
+#include "zpp/record.hpp"
 
 #include "data.hpp"
 
@@ -517,6 +518,50 @@ yas_serialization_test(size_t iterations)
     }
 }
 
+void
+zpp_serialization_test(size_t iterations)
+{
+    using namespace zpp_test;
+
+    Record r1, r2;
+
+    for (size_t i = 0; i < kIntegers.size(); i++) {
+        r1.ids.push_back(kIntegers[i]);
+    }
+
+    for (size_t i = 0; i < kStringsCount; i++) {
+        r1.strings.push_back(kStringValue);
+    }
+
+    std::string serialized;
+
+    to_string(r1, serialized);
+    from_string(r2, serialized);
+
+    if (r1 != r2) {
+        throw std::logic_error("zpp' case: deserialization failed");
+    }
+
+    std::vector<unsigned char> data;
+    data.reserve(serialized.size());
+
+    std::cout << "zpp: version = " << "v0.1" << std::endl;
+    std::cout << "zpp: size = " << serialized.size() << " bytes" << std::endl;
+
+    auto start = std::chrono::high_resolution_clock::now();
+    for (size_t i = 0; i < iterations; i++) {
+        zpp::serializer::memory_output_archive out(data);
+        out(r1);
+
+        zpp::serializer::memory_input_archive in(data);
+        in(r1);
+    }
+    auto finish = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
+
+    std::cout << "zpp: time = " << duration << " milliseconds" << std::endl << std::endl;
+}
+
 int
 main(int argc, char** argv)
 {
@@ -596,6 +641,10 @@ main(int argc, char** argv)
 
         if (names.empty() || names.find("yas-compact") != names.end()) {
             yas_serialization_test<yas::binary | yas::no_header | yas::compacted>(iterations);
+        }
+
+        if (names.empty() || names.find("zpp") != names.end()) {
+            zpp_serialization_test(iterations);
         }
     } catch (std::exception& exc) {
         std::cerr << "Error: " << exc.what() << std::endl;

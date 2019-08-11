@@ -157,6 +157,18 @@ ExternalProject_Add(
 )
 include_directories(${cereal_PREFIX}/include)
 
+set(zpp_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/zpp)
+ExternalProject_Add(
+    zpp
+    PREFIX ${zpp_PREFIX}
+    URL "https://github.com/eyalz800/serializer/archive/v0.1.tar.gz"
+    URL_MD5 "96f1db7d8f80917d730cbb1a8d7f2fbe"
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND ""
+    INSTALL_COMMAND mkdir -p ${zpp_PREFIX}/include/ && cp -r ${zpp_PREFIX}/src/zpp ${zpp_PREFIX}/include/
+)
+include_directories(${zpp_PREFIX}/include)
+
 set(avro_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/avro)
 ExternalProject_Add(
     avro
@@ -305,6 +317,6 @@ add_executable(
     ${FLATBUFFERS_SERIALIZATION_SOURCES}
     ${YAS_SERIALIZATION_SOURCES}
 )
-add_dependencies(benchmark thrift msgpack protobuf capnproto boost cereal avro flatbuffers yas)
+add_dependencies(benchmark thrift msgpack protobuf capnproto boost cereal avro flatbuffers yas zpp)
 target_link_libraries(benchmark ${LINKLIBS})
 set_target_properties(benchmark PROPERTIES COMPILE_FLAGS "-std=c++14")
