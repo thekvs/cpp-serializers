@@ -39,7 +39,7 @@ data.size <- as.data.frame(list(serializer = names.size, size = size))
 data.time <- as.data.frame(list(serializer = names.time, time = time))
 data.time2 <- as.data.frame(list(serializer = names.time2, time = time2))
 
-ssize <- ggplot(data.size, aes(x = as.factor(serializer), y = as.factor(size), fill = serializer)) +
+ssize <- ggplot(data.size, aes(x = as.factor(serializer), y = size, fill = serializer)) +
     geom_bar(stat = "identity") +
     xlab("serializer") +
     ylab("size") +
@@ -48,7 +48,7 @@ png(filename="size.png", width = 800, height = 600)
 plot(ssize)
 dev.off()
 
-stime <- ggplot(data.time, aes(x = as.factor(serializer), y = as.factor(time), fill = serializer)) +
+stime <- ggplot(data.time, aes(x = as.factor(serializer), y = time, fill = serializer)) +
     geom_bar(stat = "identity") +
     xlab("serializer") +
     ylab("time") +
@@ -57,7 +57,7 @@ png(filename="time.png", width = 800, height = 600)
 plot(stime)
 dev.off()
 
-stime2 <- ggplot(data.time2, aes(x = as.factor(serializer), y = as.factor(time), fill = serializer)) +
+stime2 <- ggplot(data.time2, aes(x = as.factor(serializer), y = time, fill = serializer)) +
     geom_bar(stat = "identity") +
     xlab("serializer") +
     ylab("time") +
