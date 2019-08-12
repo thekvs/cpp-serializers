@@ -51,6 +51,18 @@ else()
     message(STATUS "Found libtool: ${LIBTOOL}")
 endif()
 
+set(CXXOPTS_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/cxxopts)
+ExternalProject_Add(
+    cxxopts
+    PREFIX ${CXXOPTS_PREFIX}
+    URL "https://github.com/jarro2783/cxxopts/archive/v2.1.2.tar.gz"
+    URL_MD5 "51af98ad0b7ec6fb7aa1cf96ea65fff8"
+    CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX=${CXXOPTS_PREFIX}
+    LOG_UPDATE ON
+    LOG_BUILD ON
+    LOG_INSTALL ON
+)
+
 set(boost_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/boost)
 ExternalProject_Add(
     boost
@@ -293,8 +305,9 @@ add_executable(
     ${FLATBUFFERS_SERIALIZATION_SOURCES}
     ${YAS_SERIALIZATION_SOURCES}
 )
-add_dependencies(benchmark thrift msgpack protobuf capnproto boost cereal avro flatbuffers yas)
+add_dependencies(benchmark cxxopts thrift msgpack protobuf capnproto boost cereal avro flatbuffers yas)
 target_link_libraries(benchmark ${LINKLIBS})
+target_include_directories(benchmark SYSTEM PRIVATE ${CXXOPTS_PREFIX}/include)
 target_include_directories(benchmark SYSTEM PRIVATE ${thrift_PREFIX}/include)
 target_include_directories(benchmark SYSTEM PRIVATE ${Boost_INCLUDE_DIRS}/include)
 target_include_directories(benchmark SYSTEM PRIVATE ${avro_PREFIX}/include)

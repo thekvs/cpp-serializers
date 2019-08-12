@@ -7,6 +7,7 @@
 #include <sstream>
 
 #include <boost/lexical_cast.hpp>
+#include <boost/algorithm/string.hpp>
 
 #include <thrift/transport/TBufferTransports.h>
 #include <thrift/protocol/TBinaryProtocol.h>
@@ -17,6 +18,8 @@
 
 #include <capnp/message.h>
 #include <capnp/serialize.h>
+
+#include <cxxopts.hpp>
 
 #include "protobuf/test.pb.h"
 #include "capnproto/test.capnp.h"
@@ -30,6 +33,91 @@
 #include "data.hpp"
 
 enum class ThriftSerializationProto { Binary, Compact };
+
+struct Args {
+    std::size_t iterations;
+    std::set<std::string> serializers;
+};
+
+// clang-format off
+const std::set<std::string> valid_serializers = {
+    "thrift-binary",
+    "thrift-compact",
+    "protobuf",
+    "boost",
+    "msgpack",
+    "cereal",
+    "avro",
+    "capnproto",
+    "flatbuffers",
+    "yas",
+    "yas-compact"
+};
+// clang-format on
+
+void
+print_supported_serializers()
+{
+    std::cerr << std::endl << "Supported serializers are:" << std::endl;
+    for (const auto& s : valid_serializers) {
+        std::cout << "  * " << s << std::endl;
+    }
+    std::cout << std::endl;
+}
+
+Args
+parse_args(int argc, char** argv)
+{
+    cxxopts::Options args("benchmark", "Benchmark various C++ serializers");
+
+    // clang-format off
+    args.add_options()
+        ("h,help", "show this help and exit")
+        ("l,list", "show list of supported serializers")
+        ("i,iterations", "number of serialize/deserialize iterations", cxxopts::value<std::size_t>())
+        ("s,serializers", "comma separated list of serializers to test", cxxopts::value<std::string>())
+        ;
+    // clang-format on
+
+    Args opts;
+
+    try {
+        auto parsed_opts = args.parse(argc, argv);
+        if (parsed_opts.count("help")) {
+            std::cout << args.help() << std::endl;
+            exit(EXIT_SUCCESS);
+        }
+
+        if (parsed_opts.count("list")) {
+            print_supported_serializers();
+            exit(EXIT_SUCCESS);
+        }
+
+        if (parsed_opts.count("iterations") == 0) {
+            std::cerr << "Not all required option specified! Please run with -h for available options." << std::endl;
+            exit(EXIT_FAILURE);
+        }
+
+        if (parsed_opts.count("serializers")) {
+            boost::split(opts.serializers, parsed_opts["serializers"].as<std::string>(), boost::is_any_of(","));
+            for (const auto& serializer : opts.serializers) {
+                auto exists = valid_serializers.find(serializer);
+                if (exists == valid_serializers.end()) {
+                    std::cerr << "Serializer '" << serializer << "' is not supported by this benchmark." << std::endl;
+                    print_supported_serializers();
+                    exit(EXIT_FAILURE);
+                }
+            }
+        }
+
+        opts.iterations = parsed_opts["iterations"].as<std::size_t>();
+    } catch (std::exception& exc) {
+        std::cerr << exc.what() << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    return opts;
+}
 
 void
 thrift_serialization_test(size_t iterations, ThriftSerializationProto proto = ThriftSerializationProto::Binary)
@@ -522,80 +610,55 @@ main(int argc, char** argv)
 {
     GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-    if (argc < 2) {
-        std::cout << "usage: " << argv[0]
-                  << " N [thrift-binary thrift-compact protobuf boost msgpack cereal avro capnproto flatbuffers yas yas-compact]";
-        std::cout << std::endl << std::endl;
-        std::cout << "arguments: " << std::endl;
-        std::cout << " N  -- number of iterations" << std::endl << std::endl;
-        return EXIT_SUCCESS;
-    }
+    auto args = parse_args(argc, argv);
 
-    size_t iterations;
-
-    try {
-        iterations = boost::lexical_cast<size_t>(argv[1]);
-    } catch (std::exception& exc) {
-        std::cerr << "Error: " << exc.what() << std::endl;
-        std::cerr << "First positional argument must be an integer." << std::endl;
-        return EXIT_FAILURE;
-    }
-
-    std::set<std::string> names;
-
-    if (argc > 2) {
-        for (int i = 2; i < argc; i++) {
-            names.insert(argv[i]);
-        }
-    }
-
-    std::cout << "performing " << iterations << " iterations" << std::endl << std::endl;
+    std::cout << "performing " << args.iterations << " iterations" << std::endl << std::endl;
 
     /*std::cout << "total size: " << sizeof(kIntegerValue) * kIntegersCount + kStringValue.size() * kStringsCount << std::endl;*/
 
     try {
-        if (names.empty() || names.find("thrift-binary") != names.end()) {
-            thrift_serialization_test(iterations, ThriftSerializationProto::Binary);
+        if (args.serializers.empty() || args.serializers.find("thrift-binary") != args.serializers.end()) {
+            thrift_serialization_test(args.iterations, ThriftSerializationProto::Binary);
         }
 
-        if (names.empty() || names.find("thrift-compact") != names.end()) {
-            thrift_serialization_test(iterations, ThriftSerializationProto::Compact);
+        if (args.serializers.empty() || args.serializers.find("thrift-compact") != args.serializers.end()) {
+            thrift_serialization_test(args.iterations, ThriftSerializationProto::Compact);
         }
 
-        if (names.empty() || names.find("protobuf") != names.end()) {
-            protobuf_serialization_test(iterations);
+        if (args.serializers.empty() || args.serializers.find("protobuf") != args.serializers.end()) {
+            protobuf_serialization_test(args.iterations);
         }
 
-        if (names.empty() || names.find("capnproto") != names.end()) {
-            capnproto_serialization_test(iterations);
+        if (args.serializers.empty() || args.serializers.find("capnproto") != args.serializers.end()) {
+            capnproto_serialization_test(args.iterations);
         }
 
-        if (names.empty() || names.find("boost") != names.end()) {
-            boost_serialization_test(iterations);
+        if (args.serializers.empty() || args.serializers.find("boost") != args.serializers.end()) {
+            boost_serialization_test(args.iterations);
         }
 
-        if (names.empty() || names.find("msgpack") != names.end()) {
-            msgpack_serialization_test(iterations);
+        if (args.serializers.empty() || args.serializers.find("msgpack") != args.serializers.end()) {
+            msgpack_serialization_test(args.iterations);
         }
 
-        if (names.empty() || names.find("cereal") != names.end()) {
-            cereal_serialization_test(iterations);
+        if (args.serializers.empty() || args.serializers.find("cereal") != args.serializers.end()) {
+            cereal_serialization_test(args.iterations);
         }
 
-        if (names.empty() || names.find("avro") != names.end()) {
-            avro_serialization_test(iterations);
+        if (args.serializers.empty() || args.serializers.find("avro") != args.serializers.end()) {
+            avro_serialization_test(args.iterations);
         }
 
-        if (names.empty() || names.find("flatbuffers") != names.end()) {
-            flatbuffers_serialization_test(iterations);
+        if (args.serializers.empty() || args.serializers.find("flatbuffers") != args.serializers.end()) {
+            flatbuffers_serialization_test(args.iterations);
         }
 
-        if (names.empty() || names.find("yas") != names.end()) {
-            yas_serialization_test<yas::binary | yas::no_header>(iterations);
+        if (args.serializers.empty() || args.serializers.find("yas") != args.serializers.end()) {
+            yas_serialization_test<yas::binary | yas::no_header>(args.iterations);
         }
 
-        if (names.empty() || names.find("yas-compact") != names.end()) {
-            yas_serialization_test<yas::binary | yas::no_header | yas::compacted>(iterations);
+        if (args.serializers.empty() || args.serializers.find("yas-compact") != args.serializers.end()) {
+            yas_serialization_test<yas::binary | yas::no_header | yas::compacted>(args.iterations);
         }
     } catch (std::exception& exc) {
         std::cerr << "Error: " << exc.what() << std::endl;
