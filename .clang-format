@@ -3,7 +3,7 @@ Language: Cpp
 BasedOnStyle: WebKit
 
 BreakBeforeBraces: Linux
-ColumnLimit: 140
+ColumnLimit: 120
 IndentWidth: 4
 Standard: Cpp11
 AllowShortBlocksOnASingleLine: false
