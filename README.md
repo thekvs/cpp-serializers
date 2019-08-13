@@ -26,13 +26,14 @@ This project does not have any external serialization libraries dependencies. Al
 # Usage
 
 ```
-./benchmark -h
+$ ./benchmark -h
 Benchmark various C++ serializers
 Usage:
   benchmark [OPTION...]
 
   -h, --help             show this help and exit
   -l, --list             show list of supported serializers
+  -c, --csv              output in CSV format
   -i, --iterations arg   number of serialize/deserialize iterations
   -s, --serializers arg  comma separated list of serializers to benchmark
 ```
