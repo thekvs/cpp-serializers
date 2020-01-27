@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
-project(cpp_serializers LANGUAGES CXX VERSION 0.1.0)
+project(cpp_serializers LANGUAGES CXX C VERSION 0.1.0)
 
 if (NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
     message(FATAL_ERROR "Doesn't support non 64-bit platforms")
