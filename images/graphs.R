@@ -4,7 +4,7 @@ names.size <- c("thrift-binary", "thrift-compact", "protobuf", "boost", "msgpack
 names.time <- c("thrift-binary", "thrift-compact", "protobuf", "boost", "msgpack", "cereal", "avro", "yas", "yas-compact")
 names.time2 <- c("capnproto", "flatbuffers")
 # data from the 1000000 simulations
-# for t in thrift-binary thrift-compact protobuf boost msgpack cereal avro yas yas-compact; do echo -n "$t: "; ./benchmark 1 $t | grep size | awk '{print $4}'; done
+# c=" "; for t in thrift-binary thrift-compact protobuf boost msgpack cereal avro capnproto flatbuffers yas yas-compact; do ${BENCHMARK} -i 1 -s $t | grep Size | awk "{printf \"%s%d # %s\n\", \"$c\", \$3, \"$t\"}"; c=","; done
 size <- c(
      17017 # thrift-binary
     ,13378 # thrift-compact
@@ -18,21 +18,22 @@ size <- c(
     ,17416 # yas
     ,13321 # yas-compact
 )
-# for t in thrift-binary thrift-compact protobuf boost msgpack cereal avro yas yas-compact; do rm -f /tmp/$t.time; echo -n "$t: "; for i in `seq 1 50`; do ./benchmark 1000000 $t | grep time | awk '{print $4}' >>/tmp/$t.time; done; awk '{ sum += $1 } END { print sum/50}' /tmp/$t.time; done
+# c=" "; for t in thrift-binary thrift-compact protobuf boost msgpack cereal avro yas yas-compact; do rm -f /tmp/$t.time; for i in `seq 1 ${RESTARTS}`; do ${BENCHMARK} -i ${ITERATIONS} -s $t | grep Time | awk '{print $3}' >>/tmp/$t.time; done; awk "{ sum += \$1 } END {printf \"%s%f # %s\n\", \"$c\", sum/50, \"$t\"}" /tmp/$t.time; c=","; done
 time <- c(
-     1190.22 # thrift-binary
-    ,3474.32 # thrift-compact
-    ,2312.78 # protobuf
-    ,1195.04 # boost
-    ,2560.6  # msgpack
-    ,1052.46 # cereal
-    ,4488.18 # avro
-    ,302.7   # yas
-    ,2063.34 # yas-compact
+     13795.100000 # thrift-binary
+    ,41831.280000 # thrift-compact
+    ,30041.420000 # protobuf
+    ,14231.320000 # boost
+    ,31668.700000 # msgpack
+    ,14203.780000 # cereal
+    ,55352.740000 # avro
+    ,3307.360000 # yas
+    ,28981.900000 # yas-compact
 )
+# c=" "; for t in capnproto flatbuffers; do rm -f /tmp/$t.time; for i in `seq 1 ${RESTARTS}`; do ${BENCHMARK} -i ${ITERATIONS} -s $t | grep Time | awk '{print $3}' >>/tmp/$t.time; done; awk "{ sum += \$1 } END {printf \"%s%f # %s\n\", \"$c\", sum/50, \"$t\"}" /tmp/$t.time; c=","; done
 time2 <- c(
-     400.98 # capnproto
-    ,491.5  # flatbuffers
+     4512.320000 # capnproto
+    ,5821.920000 # flatbuffers
 )
 
 data.size <- as.data.frame(list(serializer = names.size, size = size))
