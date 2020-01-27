@@ -216,8 +216,14 @@ set(LINKLIBS
     ${ZLIB_LIBRARIES}
 )
 
+
+add_custom_target(thrift_make_directory ALL
+    COMMAND ${CMAKE_COMMAND} -E make_directory thrift
+    WORKING_DIRECTORY ${cpp_serializers_SOURCE_DIR}
+    COMMENT "Create thrift/ directory"
+)
 add_custom_command(
-    DEPENDS ${cpp_serializers_SOURCE_DIR}/test.thrift
+    DEPENDS ${cpp_serializers_SOURCE_DIR}/test.thrift thrift_make_directory
     COMMAND ${THRIFT_GENERATOR}
     ARGS -r -gen cpp -o ${cpp_serializers_SOURCE_DIR}/thrift/ ${cpp_serializers_SOURCE_DIR}/test.thrift
     OUTPUT  "${cpp_serializers_SOURCE_DIR}/thrift/gen-cpp/test_constants.cpp"
@@ -235,8 +241,13 @@ set(THRIFT_SERIALIZATION_SOURCES    ${cpp_serializers_SOURCE_DIR}/thrift/gen-cpp
                                     ${cpp_serializers_SOURCE_DIR}/thrift/gen-cpp/test_types.cpp
 )
 
+add_custom_target(protobuf_make_directory ALL
+    COMMAND ${CMAKE_COMMAND} -E make_directory protobuf
+    WORKING_DIRECTORY ${cpp_serializers_SOURCE_DIR}
+    COMMENT "Create protobuf/ directory"
+)
 add_custom_command(
-    DEPENDS ${cpp_serializers_SOURCE_DIR}/test.proto
+    DEPENDS ${cpp_serializers_SOURCE_DIR}/test.proto protobuf_make_directory
     COMMAND ${PROTOBUF_GENERATOR}
     ARGS -I${cpp_serializers_SOURCE_DIR} --cpp_out=${cpp_serializers_SOURCE_DIR}/protobuf ${cpp_serializers_SOURCE_DIR}/test.proto
     OUTPUT  "${cpp_serializers_SOURCE_DIR}/protobuf/test.pb.cc"
@@ -249,8 +260,13 @@ set_source_files_properties(
 )
 set(PROTOBUF_SERIALIZATION_SOURCES  ${cpp_serializers_SOURCE_DIR}/protobuf/test.pb.cc)
 
+add_custom_target(capnproto_make_directory ALL
+    COMMAND ${CMAKE_COMMAND} -E make_directory capnproto
+    WORKING_DIRECTORY ${cpp_serializers_SOURCE_DIR}
+    COMMENT "Create thrift/ directory"
+)
 add_custom_command(
-    DEPENDS ${cpp_serializers_SOURCE_DIR}/test.capnp
+    DEPENDS ${cpp_serializers_SOURCE_DIR}/test.capnp capnproto_make_directory
     COMMAND ${CAPNPROTO_GENERATOR}
     ARGS compile -I${cpp_serializers_SOURCE_DIR} --src-prefix=${cpp_serializers_SOURCE_DIR} -o${CAPNPROTO_CPP_GENERATOR}:${cpp_serializers_SOURCE_DIR}/capnproto ${cpp_serializers_SOURCE_DIR}/test.capnp
     OUTPUT  "${cpp_serializers_SOURCE_DIR}/capnproto/test.capnp.c++"
@@ -263,8 +279,13 @@ set_source_files_properties(
 )
 set(CAPNPROTO_SERIALIZATION_SOURCES  ${cpp_serializers_SOURCE_DIR}/capnproto/test.capnp.c++)
 
+add_custom_target(avro_make_directory ALL
+    COMMAND ${CMAKE_COMMAND} -E make_directory avro
+    WORKING_DIRECTORY ${cpp_serializers_SOURCE_DIR}
+    COMMENT "Create thrift/ directory"
+)
 add_custom_command(
-    DEPENDS ${cpp_serializers_SOURCE_DIR}/test.json
+    DEPENDS ${cpp_serializers_SOURCE_DIR}/test.json avro_make_directory
     COMMAND ${AVRO_GENERATOR}
     ARGS --input ${cpp_serializers_SOURCE_DIR}/test.json --output ${cpp_serializers_SOURCE_DIR}/avro/record.hpp --namespace avro_test
     OUTPUT  "${cpp_serializers_SOURCE_DIR}/avro/record.hpp"
@@ -276,8 +297,13 @@ set_source_files_properties(
 )
 set(AVRO_SERIALIZATION_SOURCES ${cpp_serializers_SOURCE_DIR}/avro/record.hpp)
 
+add_custom_target(flatbuffers_make_directory ALL
+    COMMAND ${CMAKE_COMMAND} -E make_directory flatbuffers
+    WORKING_DIRECTORY ${cpp_serializers_SOURCE_DIR}
+    COMMENT "Create thrift/ directory"
+)
 add_custom_command(
-    DEPENDS ${cpp_serializers_SOURCE_DIR}/test.fbs
+    DEPENDS ${cpp_serializers_SOURCE_DIR}/test.fbs flatbuffers_make_directory
     COMMAND ${FLATBUFFERS_GENERATOR}
     ARGS --cpp -o ${cpp_serializers_SOURCE_DIR}/flatbuffers ${cpp_serializers_SOURCE_DIR}/test.fbs
     OUTPUT "${cpp_serializers_SOURCE_DIR}/flatbuffers/test_generated.h"
