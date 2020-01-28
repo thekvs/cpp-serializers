@@ -5,3 +5,6 @@ compile_commands.json
 build/
 .vscode/
 .clangd/
+.RData
+.Rhistory
+*.Rout

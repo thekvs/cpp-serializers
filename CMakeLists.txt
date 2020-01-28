@@ -67,11 +67,11 @@ set(boost_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/boost)
 ExternalProject_Add(
     boost
     PREFIX ${boost_PREFIX}
-    URL "http://netcologne.dl.sourceforge.net/project/boost/boost/1.69.0/boost_1_69_0.tar.gz"
-    URL_MD5 "b50944c0c13f81ce2c006802a1186f5a"
-    CONFIGURE_COMMAND ${boost_PREFIX}/src/boost/bootstrap.sh --with-libraries=serialization,filesystem,system,program_options,iostreams --prefix=${boost_PREFIX}
-    BUILD_COMMAND ./bjam link=static cxxflags='-fPIC'
-    INSTALL_COMMAND ./bjam link=static install
+    URL "https://dl.bintray.com/boostorg/release/1.72.0/source/boost_1_72_0.tar.gz"
+    URL_MD5 "e2b0b1eac302880461bcbef097171758"
+    CONFIGURE_COMMAND ${boost_PREFIX}/src/boost/bootstrap.sh --with-libraries=serialization,filesystem,system,program_options,iostreams,regex --prefix=${boost_PREFIX}
+    BUILD_COMMAND ./b2 link=static cxxflags='-fPIC'
+    INSTALL_COMMAND ./b2 link=static install
     BUILD_IN_SOURCE 1
     LOG_UPDATE ON
     LOG_CONFIGURE ON
@@ -87,8 +87,8 @@ ExternalProject_Add(
     thrift
     PREFIX ${thrift_PREFIX}
     DEPENDS boost
-    URL "http://www-eu.apache.org/dist/thrift/0.12.0/thrift-0.12.0.tar.gz"
-    URL_MD5 "3deebbb4d1ca77dd9c9e009a1ea02183"
+    URL "https://www-eu.apache.org/dist/thrift/0.13.0/thrift-0.13.0.tar.gz"
+    URL_MD5 "38a27d391a2b03214b444cb13d5664f1"
     CONFIGURE_COMMAND CXX=${CMAKE_CXX_COMPILER} CC=${CMAKE_C_COMPILER} ${thrift_PREFIX}/src/thrift/configure --prefix=${thrift_PREFIX} --libdir=${thrift_PREFIX}/lib --with-boost=${Boost_INCLUDE_DIRS} --enable-shared=no --with-libevent=no --with-c_glib=no --with-java=no --with-erlang=no --with-python=no --with-perl=no --with-php=no --with-php_extension=no --with-ruby=no --with-haskell=no --with-go=no --with-d=no --with-lua=no --with-qt4=no --with-qt5=no --with-nodejs=no --with-cl=no --with-dotnetcore=no --with-nodets=no --with-rs=no --disable-tests --enable-plugin=no
     BUILD_COMMAND $(MAKE)
     INSTALL_COMMAND $(MAKE) install
@@ -118,8 +118,8 @@ set(protobuf_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/protobuf)
 ExternalProject_Add(
     protobuf
     PREFIX ${protobuf_PREFIX}
-    URL "https://github.com/protocolbuffers/protobuf/releases/download/v3.7.0/protobuf-cpp-3.7.0.tar.gz"
-    URL_MD5 "f1631a8e551e569273d78538f6ecf41c"
+    URL "https://github.com/protocolbuffers/protobuf/releases/download/v3.11.2/protobuf-cpp-3.11.2.tar.gz"
+    URL_MD5 "351a0f5c4edd3f45035417f09133ce73"
     CONFIGURE_COMMAND CXX=${CMAKE_CXX_COMPILER} CC=${CMAKE_C_COMPILER} ${protobuf_PREFIX}/src/protobuf/configure --prefix=${protobuf_PREFIX} --libdir=${protobuf_PREFIX}/lib --enable-shared=no
     BUILD_COMMAND $(MAKE)
     INSTALL_COMMAND $(MAKE) install
@@ -153,8 +153,8 @@ set(cereal_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/cereal)
 ExternalProject_Add(
     cereal
     PREFIX ${cereal_PREFIX}
-    URL "https://github.com/USCiLab/cereal/archive/v1.2.2.tar.gz"
-    URL_MD5 "4c56c7b9499dba79404250ef9a040481"
+    URL "https://github.com/USCiLab/cereal/archive/v1.3.0.tar.gz"
+    URL_MD5 "4342e811f245403646c4175258f413f1"
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND mkdir -p ${cereal_PREFIX}/include/ && cp -r ${cereal_PREFIX}/src/cereal/include/cereal ${cereal_PREFIX}/include/
@@ -165,8 +165,8 @@ ExternalProject_Add(
     avro
     DEPENDS boost
     PREFIX ${avro_PREFIX}
-    URL "https://github.com/apache/avro/archive/release-1.8.2.tar.gz"
-    URL_MD5 "dcaa6eaa0c0854c535b9daf1c024cb35"
+    URL "https://github.com/apache/avro/archive/release-1.9.1.tar.gz"
+    URL_MD5 "2929b6ee91070fe0f2f6e683c7892104"
     CONFIGURE_COMMAND cmake -DBOOST_INCLUDEDIR=${boost_PREFIX}/include -DBOOST_LIBRARYDIR=${boost_PREFIX}/lib -DBoost_NO_SYSTEM_PATHS=ON -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX=${avro_PREFIX} -DBUILD_SHARED_LIBS=OFF ${avro_PREFIX}/src/avro/lang/c++/
     # Due to some issues with using statically built boost libraries AND zlib in avro tests
     # build only necessary parts and install them in a very hackish way.
@@ -183,8 +183,8 @@ set(flatbuffers_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/flatbuffers)
 ExternalProject_Add(
     flatbuffers
     PREFIX ${flatbuffers_PREFIX}
-    URL "https://github.com/google/flatbuffers/archive/v1.10.0.tar.gz"
-    URL_MD5 "f7d19a3f021d93422b0bc287d7148cd2"
+    URL "https://github.com/google/flatbuffers/archive/v1.11.0.tar.gz"
+    URL_MD5 "02c64880acb89dbd57eebacfd67200d8"
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${flatbuffers_PREFIX} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
     LOG_UPDATE ON
     LOG_CONFIGURE ON
@@ -197,8 +197,8 @@ set(yas_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/yas)
 ExternalProject_Add(
     yas
     PREFIX ${yas_PREFIX}
-    URL "https://github.com/niXman/yas/archive/7.0.2.tar.gz"
-    URL_MD5 "d55353960467afabc6774583880a30f0"
+    URL "https://github.com/niXman/yas/archive/7.0.5.tar.gz"
+    URL_MD5 "8c666d29575c8cafe9cea1fc2946253e"
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND mkdir -p ${yas_PREFIX}/include/ && cp -r ${yas_PREFIX}/src/yas/include/yas ${yas_PREFIX}/include/

@@ -11,7 +11,7 @@ namespace flatbuffers_test {
 struct Record;
 
 struct Record FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  enum {
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_IDS = 4,
     VT_STRINGS = 6
   };
@@ -67,10 +67,12 @@ inline flatbuffers::Offset<Record> CreateRecordDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     const std::vector<int64_t> *ids = nullptr,
     const std::vector<flatbuffers::Offset<flatbuffers::String>> *strings = nullptr) {
+  auto ids__ = ids ? _fbb.CreateVector<int64_t>(*ids) : 0;
+  auto strings__ = strings ? _fbb.CreateVector<flatbuffers::Offset<flatbuffers::String>>(*strings) : 0;
   return flatbuffers_test::CreateRecord(
       _fbb,
-      ids ? _fbb.CreateVector<int64_t>(*ids) : 0,
-      strings ? _fbb.CreateVector<flatbuffers::Offset<flatbuffers::String>>(*strings) : 0);
+      ids__,
+      strings__);
 }
 
 inline const flatbuffers_test::Record *GetRecord(const void *buf) {
